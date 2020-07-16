@@ -7,24 +7,24 @@ Pod::Spec.new do |s|
       Copyright 2012 - 2019 RGMC . All rights reserved.
       LICENSE
   }
-  s.homepage = "https://github.com/rgmc95/NetworkKit"
+  s.homepage = "https://github.com/rgmc95/NetworkUtilsKit"
   s.author = "Romain Gjura & Michael Coqueret"
   s.summary = "Swift Network Utilities"
   s.swift_version = '5.1'
-  s.source =  { :git => "https://github.com/rgmc95/NetworkKit.git", :tag => "1.0" }
+  s.source =  { :git => "https://github.com/rgmc95/NetworkUtilsKit.git", :tag => "1.0.0" }
   s.default_subspec = 'Core'
 
   s.ios.deployment_target = '10.0'
 
   s.subspec 'Core' do |core|
-    core.dependency "UtilsKit", '~> 2.0'
-    core.source_files = 'NetworkKit/**/*.{h,m,swift}'
+    core.dependency 'UtilsKit', '~> 2.0'
+    core.source_files = 'NetworkUtilsKit/Core/**/*.{h,m,swift}'
   end
 
   s.subspec 'Promise' do |ext|
-    ext.dependency "NetworkUtilsKit/Core"
-    ext.dependency "PromiseKit", '~> 6.13'
-    ext.pod_target_xcconfig = { 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => 'PROMISE_KIT' }
+    ext.dependency 'NetworkUtilsKit/Core'
+    ext.dependency 'PromiseKit', '~> 6.13'
+    ext.source_files = 'NetworkUtilsKit/Promise/**/*.{h,m,swift}'
   end
 
 end

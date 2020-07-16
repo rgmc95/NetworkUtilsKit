@@ -6,7 +6,6 @@
 //  Copyright © 2020 RGMC. All rights reserved.
 //
 
-#if PROMISE_KIT
 import Foundation
 import PromiseKit
 
@@ -46,5 +45,3 @@ extension RequestProtocol {
         }
     }
 }
-
-#endif

@@ -64,10 +64,6 @@ extension RequestProtocol where Self: ResponseProtocol, Self.ResponseType: Decod
     }
 }
 
-#if PROMISE_KIT
-#endif
-
-
 //extension RequestProtocol where Self: ResponseProtocol, Self.ResponseType: CoreDataUpdatable {
 //
 //    /**
