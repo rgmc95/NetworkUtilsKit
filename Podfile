@@ -4,8 +4,9 @@ use_frameworks!
 platform :ios, '10.0'
 
 target 'NetworkUtilsKit' do
-
-	pod 'UtilsKit'		, '~> 2.0'
-  	pod 'PromiseKit'	, '~> 6.13'
-
+  
+  pod 'UtilsKit'		      , '~> 2.0'
+  pod 'PromiseKit'	      , '~> 6.13'
+  pod 'CoreDataUtilsKit'  , '~> 1.0'
+  
 end

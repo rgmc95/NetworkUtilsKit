@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1ED333280EA7023E32472BA1 /* Pods_NetworkUtilsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A567DA9326055E4A0A93C9FA /* Pods_NetworkUtilsKit.framework */; };
+		27557FDC250131440097CDC9 /* RequestProtocol+CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27557FDB250131440097CDC9 /* RequestProtocol+CoreData.swift */; };
 		279F92D424B8B33E00349413 /* NetworkKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 279F92D224B8B33E00349413 /* NetworkKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		279F92EA24B8B36E00349413 /* RequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92DB24B8B36E00349413 /* RequestManager.swift */; };
 		279F92EB24B8B36E00349413 /* RequestManager+Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92DC24B8B36E00349413 /* RequestManager+Download.swift */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		27557FDB250131440097CDC9 /* RequestProtocol+CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RequestProtocol+CoreData.swift"; sourceTree = "<group>"; };
 		279F92CF24B8B33E00349413 /* NetworkUtilsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NetworkUtilsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		279F92D224B8B33E00349413 /* NetworkKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkKit.h; sourceTree = "<group>"; };
 		279F92D324B8B33E00349413 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -56,6 +58,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		27557FD9250131210097CDC9 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				27557FDA250131390097CDC9 /* Request */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		27557FDA250131390097CDC9 /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				27557FDB250131440097CDC9 /* RequestProtocol+CoreData.swift */,
+			);
+			path = Request;
+			sourceTree = "<group>";
+		};
 		279F92C524B8B33E00349413 = {
 			isa = PBXGroup;
 			children = (
@@ -79,6 +97,7 @@
 			children = (
 				EE52C5DB24C088F8005D5951 /* Core */,
 				EE52C5DC24C088F8005D5951 /* Promise */,
+				27557FD9250131210097CDC9 /* CoreData */,
 				279F92D224B8B33E00349413 /* NetworkKit.h */,
 				279F92D324B8B33E00349413 /* Info.plist */,
 			);
@@ -315,6 +334,7 @@
 				279F92F224B8B36E00349413 /* NetworkCache.swift in Sources */,
 				279F92EF24B8B36E00349413 /* RequestError.swift in Sources */,
 				279F92FE24B8B7FF00349413 /* RequestProtocol+Promise.swift in Sources */,
+				27557FDC250131440097CDC9 /* RequestProtocol+CoreData.swift in Sources */,
 				279F92EC24B8B36E00349413 /* RequestManager+Request.swift in Sources */,
 				279F92F324B8B36E00349413 /* ResponseProtocol.swift in Sources */,
 				279F92EE24B8B36E00349413 /* RequestMethod.swift in Sources */,

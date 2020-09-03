@@ -1,4 +1,8 @@
 PODS:
+  - CoreDataUtilsKit (1.0):
+    - CoreDataUtilsKit/Core (= 1.0)
+  - CoreDataUtilsKit/Core (1.0):
+    - UtilsKit (~> 2.0)
   - PromiseKit (6.13.1):
     - PromiseKit/CorePromise (= 6.13.1)
     - PromiseKit/Foundation (= 6.13.1)
@@ -13,18 +17,21 @@ PODS:
   - UtilsKit/Core (2.0)
 
 DEPENDENCIES:
+  - CoreDataUtilsKit (~> 1.0)
   - PromiseKit (~> 6.13)
   - UtilsKit (~> 2.0)
 
 SPEC REPOS:
   trunk:
+    - CoreDataUtilsKit
     - PromiseKit
     - UtilsKit
 
 SPEC CHECKSUMS:
+  CoreDataUtilsKit: 9fe02826e58824cc909029704342bd828305ea24
   PromiseKit: 28fda91c973cc377875d8c0ea4f973013c05b6db
   UtilsKit: c2fa0ee0ca192b802c0dd18d17ef1cab4e8f9a16
 
-PODFILE CHECKSUM: ad97b5e12e1d7762f9f2192f09c39d42e0d31e4c
+PODFILE CHECKSUM: 5c1e36a2bdfd44023119855aac551529efc34c66
 
 COCOAPODS: 1.9.3
