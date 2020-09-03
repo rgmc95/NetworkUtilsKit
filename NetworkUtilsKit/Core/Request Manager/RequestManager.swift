@@ -50,6 +50,7 @@ extension RequestManager {
     private func getUrlComponents(scheme: String,
                                   host: String,
                                   path: String,
+                                  port: Int?,
                                   parameters: Parameters? = nil,
                                   encoding: Encoding = .url,
                                   authentification: AuthentificationProtocol? = nil) -> URLComponents {
@@ -59,6 +60,7 @@ extension RequestManager {
         components.scheme = scheme
         components.host = host
         components.path = path
+        components.port = port
         
         // Authentification
         authentification?.parameters.forEach {
@@ -137,6 +139,7 @@ extension RequestManager {
     internal func buildRequest(scheme: String,
                                host: String,
                                path: String,
+                               port: Int?,
                                method: RequestMethod,
                                parameters: Parameters? = nil,
                                encoding: Encoding = .url,
@@ -146,6 +149,7 @@ extension RequestManager {
         let components = self.getUrlComponents(scheme: scheme,
                                                host: host,
                                                path: path,
+                                               port: port,
                                                parameters: parameters,
                                                encoding: encoding,
                                                authentification: authentification)

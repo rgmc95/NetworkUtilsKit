@@ -20,6 +20,9 @@ public protocol RequestProtocol {
     /// Request path
     var path: String { get }
     
+    /// Request port
+    var port: Int? { get }
+    
     /// Request method
     var method: RequestMethod { get }
     
@@ -46,6 +49,9 @@ public protocol RequestProtocol {
 }
 
 extension RequestProtocol {
+    
+    /// Request port if needed
+    public var port: Int? { nil }
     
     /// Request headers if needed
     public var headers: Headers? { nil }
