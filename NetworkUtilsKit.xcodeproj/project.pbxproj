@@ -19,8 +19,8 @@
 		279F92F024B8B36E00349413 /* RequestProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92E324B8B36E00349413 /* RequestProtocol.swift */; };
 		279F92F124B8B36E00349413 /* AuthentificationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92E524B8B36E00349413 /* AuthentificationProtocol.swift */; };
 		279F92F224B8B36E00349413 /* NetworkCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92E724B8B36E00349413 /* NetworkCache.swift */; };
-		279F92F324B8B36E00349413 /* ResponseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92E924B8B36E00349413 /* ResponseProtocol.swift */; };
 		279F92FE24B8B7FF00349413 /* RequestProtocol+Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92FD24B8B7FF00349413 /* RequestProtocol+Promise.swift */; };
+		27C460EE25B04F4700C2E4DC /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C460ED25B04F4700C2E4DC /* ResponseError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,8 +37,8 @@
 		279F92E324B8B36E00349413 /* RequestProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestProtocol.swift; sourceTree = "<group>"; };
 		279F92E524B8B36E00349413 /* AuthentificationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthentificationProtocol.swift; sourceTree = "<group>"; };
 		279F92E724B8B36E00349413 /* NetworkCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkCache.swift; sourceTree = "<group>"; };
-		279F92E924B8B36E00349413 /* ResponseProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponseProtocol.swift; sourceTree = "<group>"; };
 		279F92FD24B8B7FF00349413 /* RequestProtocol+Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RequestProtocol+Promise.swift"; sourceTree = "<group>"; };
+		27C460ED25B04F4700C2E4DC /* ResponseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseError.swift; sourceTree = "<group>"; };
 		690715F063B743C10D414A77 /* Pods-NetworkKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkKit.release.xcconfig"; path = "Target Support Files/Pods-NetworkKit/Pods-NetworkKit.release.xcconfig"; sourceTree = "<group>"; };
 		83F6D884643163E37C92A5AD /* Pods-NetworkUtilsKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkUtilsKit.release.xcconfig"; path = "Target Support Files/Pods-NetworkUtilsKit/Pods-NetworkUtilsKit.release.xcconfig"; sourceTree = "<group>"; };
 		A567DA9326055E4A0A93C9FA /* Pods_NetworkUtilsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkUtilsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -149,12 +149,12 @@
 			path = Cache;
 			sourceTree = "<group>";
 		};
-		279F92E824B8B36E00349413 /* Response */ = {
+		27C460EC25B04F3700C2E4DC /* Error */ = {
 			isa = PBXGroup;
 			children = (
-				279F92E924B8B36E00349413 /* ResponseProtocol.swift */,
+				27C460ED25B04F4700C2E4DC /* ResponseError.swift */,
 			);
-			path = Response;
+			path = Error;
 			sourceTree = "<group>";
 		};
 		AF5F65466E8B6CA3DF305145 /* Frameworks */ = {
@@ -182,7 +182,7 @@
 				279F92E424B8B36E00349413 /* Authentification */,
 				279F92E624B8B36E00349413 /* Cache */,
 				279F92E224B8B36E00349413 /* Request */,
-				279F92E824B8B36E00349413 /* Response */,
+				27C460EC25B04F3700C2E4DC /* Error */,
 				279F92DA24B8B36E00349413 /* Request Manager */,
 			);
 			path = Core;
@@ -335,8 +335,8 @@
 				279F92EF24B8B36E00349413 /* RequestError.swift in Sources */,
 				279F92FE24B8B7FF00349413 /* RequestProtocol+Promise.swift in Sources */,
 				27557FDC250131440097CDC9 /* RequestProtocol+CoreData.swift in Sources */,
+				27C460EE25B04F4700C2E4DC /* ResponseError.swift in Sources */,
 				279F92EC24B8B36E00349413 /* RequestManager+Request.swift in Sources */,
-				279F92F324B8B36E00349413 /* ResponseProtocol.swift in Sources */,
 				279F92EE24B8B36E00349413 /* RequestMethod.swift in Sources */,
 				279F92EB24B8B36E00349413 /* RequestManager+Download.swift in Sources */,
 				279F92F024B8B36E00349413 /* RequestProtocol.swift in Sources */,

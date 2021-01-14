@@ -9,12 +9,13 @@
 import CoreDataUtilsKit
 
 
-extension RequestProtocol where Self: ResponseProtocol, Self.ResponseType: CoreDataUpdatable {
+extension RequestProtocol {
     
     /**
      Get the decoded response of `CoreDataUpdatable` type based
      */
-    public func response(completion: ((Swift.Result<ResponseType, Error>) -> Void)?) {
+    public func response<T: Decodable & CoreDataUpdatable>(_ type: T.Type,
+                                                           completion: ((Swift.Result<T, Error>) -> Void)?) {
         self.responseData { result in
             switch result {
             case .success(let response):
@@ -24,7 +25,7 @@ extension RequestProtocol where Self: ResponseProtocol, Self.ResponseType: CoreD
                 guard let json = try? JSONSerialization.jsonObject(with: data, options: [])
                 else { completion?(.failure(ResponseError.json)); return }
                 
-                guard let objects = ResponseType.update(with: json)
+                guard let objects = T.update(with: json)
                 else { completion?(.failure(ResponseError.decodable)); return }
                 completion?(.success(objects))
             case .failure(let error): completion?(.failure(error))

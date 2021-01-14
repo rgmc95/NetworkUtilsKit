@@ -9,26 +9,6 @@
 import Foundation
 import PromiseKit
 
-extension RequestProtocol where Self: ResponseProtocol {
-    
-    /**
-        Get the decoded response of `Decodable` type based
-     */
-    public func response() -> Promise<ResponseType> {
-        Promise { resolver in
-            self.response { results in
-                switch results {
-                case .success(let response):
-                    resolver.fulfill(response)
-                    
-                case .failure(let error):
-                    resolver.reject(error)
-                }
-            }
-        }
-    }
-}
-
 extension RequestProtocol {
     
     /**
@@ -39,6 +19,20 @@ extension RequestProtocol {
             self.responseData { results in
                 switch results {
                 case .success(let response): resolver.fulfill(response.data)
+                case .failure(let error): resolver.reject(error)
+                }
+            }
+        }
+    }
+    
+    /**
+        Send request and return response or error
+     */
+    public func response<T: Decodable>(_ type: T.Type) -> Promise<T> {
+        Promise { resolver in
+            self.response(type) { results in
+                switch results {
+                case .success(let response): resolver.fulfill(response)
                 case .failure(let error): resolver.reject(error)
                 }
             }

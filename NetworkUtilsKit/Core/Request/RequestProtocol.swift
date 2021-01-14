@@ -96,6 +96,22 @@ extension RequestProtocol {
         }
     }
     
+    /**
+        Get the decoded response of type `T`
+     */
+    public func response<T: Decodable>(_ type: T.Type,
+                                       completion: ((Result<T, Error>) -> Void)? = nil) {
+        self.responseData { result in
+            switch result {
+            case .success(let response):
+                guard let data = response.data else { completion?(.failure(ResponseError.data)); return }
+                guard let objects = T.decode(from: data) else { completion?(.failure(ResponseError.decodable)); return }
+                completion?(.success(objects))
+            case .failure(let error): completion?(.failure(error))
+            }
+        }
+    }
+    
     
     /**
         Send request and return  error if failed
