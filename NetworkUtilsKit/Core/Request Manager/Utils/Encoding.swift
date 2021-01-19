@@ -15,4 +15,7 @@ public enum Encoding {
     
     /// JSON encoding
     case json
+
+    /// Form Data
+    case formData
 }

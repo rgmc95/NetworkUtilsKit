@@ -31,6 +31,9 @@ public protocol RequestProtocol {
     
     /// Request parameters if needed
     var parameters: Parameters? { get }
+
+    /// Request URL of local files in an array if needed
+    var fileArray: [URL]? { get }
     
     /// Request encoding
     var encoding: Encoding { get }
@@ -48,6 +51,7 @@ public protocol RequestProtocol {
     var identifier: String? { get }
 }
 
+/// default values
 extension RequestProtocol {
     
     /// Request port if needed
@@ -58,6 +62,9 @@ extension RequestProtocol {
     
     /// Request parameters if needed
     public var parameters: Parameters? { nil }
+
+    /// Request URL of local files in an array if needed
+    public var fileArray: [URL]? { nil }
     
     /// Request encoding
     public var encoding: Encoding { .url }

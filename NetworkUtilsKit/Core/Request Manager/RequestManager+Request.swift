@@ -19,6 +19,7 @@ extension RequestManager {
         port: Int?,
         method: RequestMethod = .get,
         parameters: Parameters? = nil,
+        fileArray: [URL]? = nil,
         encoding: Encoding = .url,
         headers: Headers? = nil,
         authentification: AuthentificationProtocol? = nil,
@@ -34,6 +35,7 @@ extension RequestManager {
                                                                 port: port,
                                                                 method: method,
                                                                 parameters: parameters,
+                                                                fileArray: fileArray,
                                                                 encoding: encoding,
                                                                 headers: headers,
                                                                 authentification: authentification)
@@ -42,7 +44,7 @@ extension RequestManager {
                 request.timeoutInterval = self.requestTimeoutInterval ?? request.timeoutInterval
                 
                 log(NetworkLogType.sending(method.rawValue), requestId)
-                
+
                 URLSession(configuration: self.requestConfiguration).dataTask(with: request) { data, response, _ in
                     queue.async {
                         guard let response = response as? HTTPURLResponse else {
@@ -83,6 +85,7 @@ extension RequestManager {
                      port: request.port,
                      method: request.method,
                      parameters: request.parameters,
+                     fileArray: request.fileArray,
                      encoding: request.encoding,
                      headers: request.headers,
                      authentification: request.authentification,
