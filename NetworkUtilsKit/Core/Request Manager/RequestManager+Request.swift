@@ -19,13 +19,14 @@ extension RequestManager {
         port: Int?,
         method: RequestMethod = .get,
         parameters: Parameters? = nil,
-        fileArray: [URL]? = nil,
+        fileList: [String:URL]? = nil,
         encoding: Encoding = .url,
         headers: Headers? = nil,
         authentification: AuthentificationProtocol? = nil,
         queue: DispatchQueue = DispatchQueue.main,
         identifier: String? = nil,
-        completion: ((Result<NetworkResponse, Error>) -> Void)? = nil) {
+        completion: ((Result<NetworkResponse, Error>) -> Void)? = nil,
+        progressBlock: ((Double) -> Void)? = nil) {
         
         queue.async {
             do {
@@ -35,7 +36,7 @@ extension RequestManager {
                                                                 port: port,
                                                                 method: method,
                                                                 parameters: parameters,
-                                                                fileArray: fileArray,
+                                                                fileList: fileList,
                                                                 encoding: encoding,
                                                                 headers: headers,
                                                                 authentification: authentification)
@@ -44,13 +45,17 @@ extension RequestManager {
                 request.timeoutInterval = self.requestTimeoutInterval ?? request.timeoutInterval
                 
                 log(NetworkLogType.sending(method.rawValue), requestId)
-
-                URLSession(configuration: self.requestConfiguration).dataTask(with: request) { data, response, _ in
+                let task = URLSession(configuration: self.requestConfiguration).dataTask(with: request) { data, response, _ in
                     queue.async {
+                        self.observation?.invalidate()
                         guard let response = response as? HTTPURLResponse else {
                             completion?(.failure(ResponseError.unknow))
                             return
                         }
+
+                        #if DEBUG
+                        print(String(data: data ?? Data(), encoding: .utf8))
+                        #endif
                         
                         if response.statusCode >= 200 && response.statusCode < 300 {
                             log(NetworkLogType.success(method.rawValue), requestId)
@@ -64,8 +69,21 @@ extension RequestManager {
                         }
                     }
                 }
-                .resume()
+
+                if let progressBlock = progressBlock {
+                    // Don't forget to invalidate the observation when you don't need it anymore.
+                    self.observation = task.progress.observe(\.fractionCompleted) { progress, _ in
+                        log(NetworkLogType.sending(method.rawValue), "progress : \(progress.fractionCompleted)", error: nil)
+                        DispatchQueue.main.async {
+                            progressBlock(progress.fractionCompleted)
+                        }
+                    }
+                }
+
+                task.resume()
+
             } catch {
+                self.observation?.invalidate()
                 completion?(.failure(error))
                 return
             }
@@ -78,19 +96,22 @@ extension RequestManager {
      - parameter result: Request Result
      */
     public func request(_ request: RequestProtocol,
-                        result: ((Result<NetworkResponse, Error>) -> Void)? = nil) {
+                        result: ((Result<NetworkResponse, Error>) -> Void)? = nil,
+                        progressBlock:((Double) -> Void)? = nil) {
+
         self.request(scheme: request.scheme,
                      host: request.host,
                      path: request.path,
                      port: request.port,
                      method: request.method,
                      parameters: request.parameters,
-                     fileArray: request.fileArray,
+                     fileList: request.fileList,
                      encoding: request.encoding,
                      headers: request.headers,
                      authentification: request.authentification,
                      queue: request.queue,
                      identifier: request.identifier,
-                     completion: result)
+                     completion: result,
+                     progressBlock: progressBlock)
     }
 }

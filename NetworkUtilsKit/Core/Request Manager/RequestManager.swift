@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import UtilsKit
 /// Request headers
 public typealias Headers = [String: String]
 
@@ -42,11 +42,13 @@ public class RequestManager {
         self.requestConfiguration = URLSessionConfiguration.default
         self.downloadConfiguration = URLSessionConfiguration.default
     }
+
+    internal var observation: NSKeyValueObservation?
 }
 
 // MARK: - Utils
 extension RequestManager {
-    
+
     private func getUrlComponents(scheme: String,
                                   host: String,
                                   path: String,
@@ -88,14 +90,10 @@ extension RequestManager {
         
         return components
     }
-    
-    private func getBodyParameters(parameters: Parameters?,
-                                   fileArray: [URL]? = nil,
-                                   encoding: Encoding,
-                                   authentification: AuthentificationProtocol?,
-                                   boundaryString: String?) -> Parameters {
-        var finalBodyParameters: Parameters = [:]
-        
+
+    private func getJSONBodyData(parameters: Parameters?,
+                                 authentification: AuthentificationProtocol?) -> Data?  {
+        var finalBodyParameters:Parameters = [:]
         // Authentification
         authentification?.parameters.forEach {
             switch authentification?.encoding {
@@ -106,46 +104,26 @@ extension RequestManager {
             case .none: break
             }
         }
-        
-        // Parameters
-        switch encoding {
-        case .json:
-            parameters?.forEach({
-                finalBodyParameters[$0.key] = $0.value
-            })
-        case .formData:
-            if let boundaryString = boundaryString {
-                var body = Data()
-                let boundaryPrefix = " — \(boundaryString)\r\n"
-                // Add dictionnary parameters
-                if let parameters = parameters {
-                    for (key, value) in parameters {
-                        body.append(Data(boundaryPrefix.utf8))
-                        body.append(Data(("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n").utf8))
-                        body.append(Data(("\(value)\r\n").utf8))
-                    }
-                }
 
-                // add file parameters
-                if let fileArray = fileArray {
-                    for (index,url) in fileArray.enumerated(){
-                        var filename = url.lastPathComponent
-                        var mimeType = url.mimeType
-                        if let data = url.contentData() {
-                            body.append(Data(boundaryPrefix.utf8))
-                            body.append(Data(("Content-Disposition: form-data; name=\"image[]\"; filename=\"\(filename)\"\r\n").utf8))
-                            body.append(Data(("Content-Type: \(mimeType)\r\n\r\n").utf8))
-                            body.append(data)
-                            body.append(Data(("\r\n").utf8))
-                        }
-                    }
-                    body.append(Data((" — ".appending(boundaryString.appending(" — "))).utf8))
+        // Parameters
+        parameters?.forEach({
+            finalBodyParameters[$0.key] = $0.value
+        })
+
+        var dataBody:Data?
+        if !finalBodyParameters.isEmpty {
+            if JSONSerialization.isValidJSONObject(finalBodyParameters) {
+                do {
+                    dataBody = try JSONSerialization.data(withJSONObject: finalBodyParameters, options: [])
+                } catch {
+                    log(DefaultLogType.data, "JSON is invalid")
                 }
+            } else {
+                log(DefaultLogType.data, "JSON is invalid")
             }
-        case .url: break
         }
-        
-        return finalBodyParameters
+
+        return dataBody
     }
     
     private func getHeaders(headers: Headers?,
@@ -173,7 +151,7 @@ extension RequestManager {
                                port: Int?,
                                method: RequestMethod,
                                parameters: Parameters? = nil,
-                               fileArray:[URL]? = nil,
+                               fileList:[String:URL]? = nil,
                                encoding: Encoding = .url,
                                headers: Headers? = nil,
                                authentification: AuthentificationProtocol? = nil) throws -> URLRequest {
@@ -199,26 +177,29 @@ extension RequestManager {
         switch encoding {
         case .json:
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = self.getJSONBodyData(parameters: parameters, authentification: authentification)
         case .formData:
-            boundary = "Boundary-\(UUID().uuidString)"
-            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            request.buildFormDataBody { (formData) in
+                //1. add URL to local file
+                if let fileList = fileList {
+                    for (fileName,oneFile) in fileList {
+                        try? formData.append(fileUrl: oneFile, name: fileName)
+                    }
+                }
+
+                //3. Add string parameters
+                if let parameters = parameters {
+                    for (paramName, paramValue) in parameters
+                    {
+                        if let paramValue = paramValue as? String {
+                            formData.append(value: paramValue, name: paramName)
+                        }
+                    }
+                }
+            }
+
         default: break
         }
-
-        // Final body parameters
-        let finalBodyParameters = self.getBodyParameters(parameters: parameters,
-                                                         fileArray: fileArray,
-                                                         encoding: encoding,
-                                                         authentification: authentification,
-                                                         boundaryString: boundary)
-        if !finalBodyParameters.isEmpty {
-            if JSONSerialization.isValidJSONObject(finalBodyParameters) {
-                request.httpBody = try JSONSerialization.data(withJSONObject: finalBodyParameters, options: [])
-            } else {
-                throw RequestError.json
-            }
-        }
-        
         return request
     }
 }

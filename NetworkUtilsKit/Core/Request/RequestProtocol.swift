@@ -33,7 +33,7 @@ public protocol RequestProtocol {
     var parameters: Parameters? { get }
 
     /// Request URL of local files in an array if needed
-    var fileArray: [URL]? { get }
+    var fileList: [String:URL]? { get }
     
     /// Request encoding
     var encoding: Encoding { get }
@@ -53,7 +53,7 @@ public protocol RequestProtocol {
 
 /// default values
 extension RequestProtocol {
-    
+    /*
     /// Request port if needed
     public var port: Int? { nil }
     
@@ -64,7 +64,7 @@ extension RequestProtocol {
     public var parameters: Parameters? { nil }
 
     /// Request URL of local files in an array if needed
-    public var fileArray: [URL]? { nil }
+    public var fileList: [String:URL]? { nil }
     
     /// Request encoding
     public var encoding: Encoding { .url }
@@ -80,19 +80,22 @@ extension RequestProtocol {
     
     /// Request identifier
     public var identifier: String? { nil }
+    */
     
     /**
-        Send request and return response or error
+        Send request and return response or error, with progress value
      */
-    public func responseData(completion: ((Result<NetworkResponse, Error>) -> Void)? = nil) {
-        RequestManager.shared.request(self) { result in
+    public func responseData(   completion: ((Result<NetworkResponse, Error>) -> Void)? = nil,
+                                progressBlock:((Double) -> Void)? = nil ) {
+
+        RequestManager.shared.request(self) { (result) in
             switch result {
             case .success(let response):
                 if let cacheKey = self.cacheKey {
                     NetworkCache.shared.set(response.data, for: cacheKey)
                 }
                 completion?(result)
-                
+
             case .failure(let error):
                 if let cacheKey = self.cacheKey, let data = NetworkCache.shared.get(cacheKey) {
                     completion?(.success((statusCode: (error as? RequestError)?.statusCode, data: data)))
@@ -100,15 +103,25 @@ extension RequestProtocol {
                     completion?(result)
                 }
             }
+        } progressBlock: { (progress) in
+            progressBlock?(progress)
         }
+    }
+
+    /**
+        Send request and return response or error
+     */
+    public func responseData(completion: ((Result<NetworkResponse, Error>) -> Void)? = nil) {
+        self.responseData(completion: completion, progressBlock: nil)
     }
     
     /**
-        Get the decoded response of type `T`
+        Get the decoded response of type `T`with progress
      */
     public func response<T: Decodable>(_ type: T.Type,
-                                       completion: ((Result<T, Error>) -> Void)? = nil) {
-        self.responseData { result in
+                                       completion: ((Result<T, Error>) -> Void)? = nil,
+                                       progressBlock:((Double) -> Void)? = nil ) {
+        self.responseData { (result) in
             switch result {
             case .success(let response):
                 guard let data = response.data else { completion?(.failure(ResponseError.data)); return }
@@ -116,19 +129,33 @@ extension RequestProtocol {
                 completion?(.success(objects))
             case .failure(let error): completion?(.failure(error))
             }
+        } progressBlock: { (progress) in
+            progressBlock?(progress)
         }
+    }
+
+    /**
+        Get the decoded response of type `T`
+     */
+    public func response<T: Decodable>(_ type: T.Type,
+                                       completion: ((Result<T, Error>) -> Void)? = nil) {
+        self.response(type, completion: completion, progressBlock: nil)
     }
     
     
     /**
         Send request and return  error if failed
      */
-    public func send(completion: ((Result<Void, Error>) -> Void)? = nil) {
+    public func send(completion: ((Result<Void, Error>) -> Void)? = nil,
+                     progressBlock:((Double) -> Void)? = nil ) {
+
         self.responseData { result in
             switch result {
             case .success: completion?(.success(()))
             case .failure(let error): completion?(.failure(error))
             }
+        } progressBlock: { (progress) in
+            progressBlock?(progress)
         }
     }
     
