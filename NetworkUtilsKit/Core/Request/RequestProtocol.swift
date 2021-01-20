@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import UtilsKit
 
 /// This protocol represents a full request to execute
-public protocol RequestProtocol {
+public protocol RequestProtocol: CustomStringConvertible {
     
     /// Request scheme
     var scheme: String { get }
@@ -31,7 +32,7 @@ public protocol RequestProtocol {
     
     /// Request parameters if needed
     var parameters: Parameters? { get }
-
+    
     /// Request URL of local files in an array if needed
     var fileList: [String: URL]? { get }
     
@@ -51,9 +52,17 @@ public protocol RequestProtocol {
     var identifier: String? { get }
 }
 
+extension RequestProtocol {
+    
+    /// Resquest string representable
+    public var description: String {
+        "\(self.method.rawValue) - \(self.identifier ?? "\("\(self.scheme)://\(self.host)\(self.path)")")"
+    }
+}
+
 /// default values
 extension RequestProtocol {
-    /*
+    
     /// Request port if needed
     public var port: Int? { nil }
     
@@ -62,9 +71,9 @@ extension RequestProtocol {
     
     /// Request parameters if needed
     public var parameters: Parameters? { nil }
-
+    
     /// Request URL of local files in an array if needed
-    public var fileList: [String:URL]? { nil }
+    public var fileList: [String: URL]? { nil }
     
     /// Request encoding
     public var encoding: Encoding { .url }
@@ -80,13 +89,14 @@ extension RequestProtocol {
     
     /// Request identifier
     public var identifier: String? { nil }
-     */
     
+    // MARK: Response
     /**
      Send request and return response or error, with progress value
      */
-    public func responseData(completion: ((Result<NetworkResponse, Error>) -> Void)? = nil,
-                             progressBlock: ((Double) -> Void)? = nil ) {
+    public func response(completion: ((Result<NetworkResponse, Error>) -> Void)? = nil,
+                         progressBlock: ((Double) -> Void)? = nil ) {
+        
         RequestManager.shared.request(self,
                                       result: { result in
                                         switch result {
@@ -107,21 +117,21 @@ extension RequestProtocol {
                                         progressBlock?(progress)
                                       })
     }
-
+    
     /**
-        Send request and return response or error
+     Send request and return response or error
      */
-    public func responseData(completion: ((Result<NetworkResponse, Error>) -> Void)? = nil) {
-        self.responseData(completion: completion, progressBlock: nil)
+    public func response(completion: ((Result<NetworkResponse, Error>) -> Void)? = nil) {
+        self.response(completion: completion, progressBlock: nil)
     }
     
     /**
-        Get the decoded response of type `T`with progress
+     Get the decoded response of type `T` with progress
      */
     public func response<T: Decodable>(_ type: T.Type,
                                        completion: ((Result<T, Error>) -> Void)? = nil,
                                        progressBlock: ((Double) -> Void)? = nil ) {
-        self.responseData { result in
+        self.response { result in
             switch result {
             case .success(let response):
                 guard let data = response.data else { completion?(.failure(ResponseError.data)); return }
@@ -133,23 +143,23 @@ extension RequestProtocol {
             progressBlock?(progress)
         }
     }
-
+    
     /**
-        Get the decoded response of type `T`
+     Get the decoded response of type `T`
      */
     public func response<T: Decodable>(_ type: T.Type,
                                        completion: ((Result<T, Error>) -> Void)? = nil) {
         self.response(type, completion: completion, progressBlock: nil)
     }
     
-    
+    // MARK: Send
     /**
-        Send request and return  error if failed
+     Send request and return  error if failed
      */
     public func send(completion: ((Result<Void, Error>) -> Void)? = nil,
                      progressBlock: ((Double) -> Void)? = nil ) {
-
-        self.responseData { result in
+        
+        self.response { result in
             switch result {
             case .success: completion?(.success(()))
             case .failure(let error): completion?(.failure(error))
@@ -159,6 +169,7 @@ extension RequestProtocol {
         }
     }
     
+    // MARK: Download
     /**
      Download request
      - parameter URL : URL
@@ -176,7 +187,7 @@ extension RequestProtocol {
 extension RequestProtocol {
     
     /**
-        Clear request cache
+     Clear request cache
      */
     public func clearCache() {
         guard let cacheKey = self.cacheKey else { return }

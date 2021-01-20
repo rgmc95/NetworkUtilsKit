@@ -24,7 +24,10 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
         self.progress = progress
     }
     
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+    func urlSession(_ session: URLSession,
+                    downloadTask: URLSessionDownloadTask,
+                    didFinishDownloadingTo location: URL) {
+        
         guard let response = downloadTask.response as? HTTPURLResponse else {
             completion?(.failure(ResponseError.unknow))
             return
@@ -32,7 +35,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
         
         if response.statusCode >= 200 && response.statusCode < 300 {
             
-            log(NetworkLogType.success(downloadTask.originalRequest?.httpMethod ?? ""), identifier)
+            log(NetworkLogType.download, identifier)
             
             do {
                 try FileManager.default.moveItem(at: location, to: destination)
@@ -44,7 +47,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
             return
         } else {
             let error = ResponseError.network(response: response)
-            log(NetworkLogType.error(downloadTask.originalRequest?.httpMethod ?? ""), identifier, error: error)
+            log(NetworkLogType.error, identifier, error: error)
             completion?(.failure(error))
             return
         }
@@ -59,7 +62,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
         
         let requestError = ResponseError.network(response: response)
         
-        log(NetworkLogType.error(task.originalRequest?.httpMethod ?? ""), identifier, error: requestError)
+        log(NetworkLogType.error, identifier, error: requestError)
         completion?(.failure(requestError))
         return
     }
@@ -117,7 +120,7 @@ extension RequestManager {
                 request.timeoutInterval = timeoutInterval
             }
             
-            log(NetworkLogType.success(method.rawValue), requestId)
+            log(NetworkLogType.download, requestId)
             
             session.downloadTask(with: request).resume()
         }

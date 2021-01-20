@@ -23,6 +23,8 @@
 		27C460EE25B04F4700C2E4DC /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C460ED25B04F4700C2E4DC /* ResponseError.swift */; };
 		27D762DC25B884C100A9A66D /* URLRequest+FormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D762DA25B884C100A9A66D /* URLRequest+FormData.swift */; };
 		27D762DD25B884C100A9A66D /* URL+RequestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D762DB25B884C100A9A66D /* URL+RequestHelper.swift */; };
+		27F5853425B9C34000F50017 /* NetworkLogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F5853325B9C34000F50017 /* NetworkLogType.swift */; };
+		27F5854925B9CCA400F50017 /* MockProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F5854825B9CCA400F50017 /* MockProtocol.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +45,8 @@
 		27C460ED25B04F4700C2E4DC /* ResponseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseError.swift; sourceTree = "<group>"; };
 		27D762DA25B884C100A9A66D /* URLRequest+FormData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+FormData.swift"; sourceTree = "<group>"; };
 		27D762DB25B884C100A9A66D /* URL+RequestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+RequestHelper.swift"; sourceTree = "<group>"; };
+		27F5853325B9C34000F50017 /* NetworkLogType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLogType.swift; sourceTree = "<group>"; };
+		27F5854825B9CCA400F50017 /* MockProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProtocol.swift; sourceTree = "<group>"; };
 		690715F063B743C10D414A77 /* Pods-NetworkKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkKit.release.xcconfig"; path = "Target Support Files/Pods-NetworkKit/Pods-NetworkKit.release.xcconfig"; sourceTree = "<group>"; };
 		83F6D884643163E37C92A5AD /* Pods-NetworkUtilsKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkUtilsKit.release.xcconfig"; path = "Target Support Files/Pods-NetworkUtilsKit/Pods-NetworkUtilsKit.release.xcconfig"; sourceTree = "<group>"; };
 		A567DA9326055E4A0A93C9FA /* Pods_NetworkUtilsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkUtilsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -127,6 +131,7 @@
 				279F92DF24B8B36E00349413 /* Encoding.swift */,
 				279F92E024B8B36E00349413 /* RequestMethod.swift */,
 				279F92E124B8B36E00349413 /* RequestError.swift */,
+				27F5853325B9C34000F50017 /* NetworkLogType.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -135,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				279F92E324B8B36E00349413 /* RequestProtocol.swift */,
+				27F5854825B9CCA400F50017 /* MockProtocol.swift */,
 			);
 			path = Request;
 			sourceTree = "<group>";
@@ -343,6 +349,8 @@
 				279F92FE24B8B7FF00349413 /* RequestProtocol+Promise.swift in Sources */,
 				27557FDC250131440097CDC9 /* RequestProtocol+CoreData.swift in Sources */,
 				27C460EE25B04F4700C2E4DC /* ResponseError.swift in Sources */,
+				27F5854925B9CCA400F50017 /* MockProtocol.swift in Sources */,
+				27F5853425B9C34000F50017 /* NetworkLogType.swift in Sources */,
 				279F92EC24B8B36E00349413 /* RequestManager+Request.swift in Sources */,
 				279F92EE24B8B36E00349413 /* RequestMethod.swift in Sources */,
 				279F92EB24B8B36E00349413 /* RequestManager+Download.swift in Sources */,

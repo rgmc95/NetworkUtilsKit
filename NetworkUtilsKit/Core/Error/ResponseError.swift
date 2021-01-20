@@ -15,6 +15,7 @@ public enum ResponseError: Error, LocalizedError {
     case data
     case json
     case network(response: HTTPURLResponse?)
+    case noMock
     
     public var errorDescription: String? {
         switch self {
@@ -25,6 +26,7 @@ public enum ResponseError: Error, LocalizedError {
         case .network(let response):
             guard let statusCode = response?.statusCode else { return nil }
             return "\(statusCode): \(HTTPURLResponse.localizedString(forStatusCode: statusCode))"
+        case .noMock: return "No mock file found"
         }
     }
 }
