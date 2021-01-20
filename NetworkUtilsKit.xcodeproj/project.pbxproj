@@ -21,6 +21,8 @@
 		279F92F224B8B36E00349413 /* NetworkCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92E724B8B36E00349413 /* NetworkCache.swift */; };
 		279F92FE24B8B7FF00349413 /* RequestProtocol+Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92FD24B8B7FF00349413 /* RequestProtocol+Promise.swift */; };
 		27C460EE25B04F4700C2E4DC /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C460ED25B04F4700C2E4DC /* ResponseError.swift */; };
+		27D762DC25B884C100A9A66D /* URLRequest+FormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D762DA25B884C100A9A66D /* URLRequest+FormData.swift */; };
+		27D762DD25B884C100A9A66D /* URL+RequestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D762DB25B884C100A9A66D /* URL+RequestHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +41,8 @@
 		279F92E724B8B36E00349413 /* NetworkCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkCache.swift; sourceTree = "<group>"; };
 		279F92FD24B8B7FF00349413 /* RequestProtocol+Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RequestProtocol+Promise.swift"; sourceTree = "<group>"; };
 		27C460ED25B04F4700C2E4DC /* ResponseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseError.swift; sourceTree = "<group>"; };
+		27D762DA25B884C100A9A66D /* URLRequest+FormData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+FormData.swift"; sourceTree = "<group>"; };
+		27D762DB25B884C100A9A66D /* URL+RequestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+RequestHelper.swift"; sourceTree = "<group>"; };
 		690715F063B743C10D414A77 /* Pods-NetworkKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkKit.release.xcconfig"; path = "Target Support Files/Pods-NetworkKit/Pods-NetworkKit.release.xcconfig"; sourceTree = "<group>"; };
 		83F6D884643163E37C92A5AD /* Pods-NetworkUtilsKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkUtilsKit.release.xcconfig"; path = "Target Support Files/Pods-NetworkUtilsKit/Pods-NetworkUtilsKit.release.xcconfig"; sourceTree = "<group>"; };
 		A567DA9326055E4A0A93C9FA /* Pods_NetworkUtilsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkUtilsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,6 +122,8 @@
 		279F92DE24B8B36E00349413 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				27D762DB25B884C100A9A66D /* URL+RequestHelper.swift */,
+				27D762DA25B884C100A9A66D /* URLRequest+FormData.swift */,
 				279F92DF24B8B36E00349413 /* Encoding.swift */,
 				279F92E024B8B36E00349413 /* RequestMethod.swift */,
 				279F92E124B8B36E00349413 /* RequestError.swift */,
@@ -244,7 +250,7 @@
 		279F92C624B8B33E00349413 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1150;
+				LastUpgradeCheck = 1230;
 				ORGANIZATIONNAME = RGMC;
 				TargetAttributes = {
 					279F92CE24B8B33E00349413 = {
@@ -329,6 +335,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				279F92ED24B8B36E00349413 /* Encoding.swift in Sources */,
+				27D762DC25B884C100A9A66D /* URLRequest+FormData.swift in Sources */,
 				279F92EA24B8B36E00349413 /* RequestManager.swift in Sources */,
 				279F92F124B8B36E00349413 /* AuthentificationProtocol.swift in Sources */,
 				279F92F224B8B36E00349413 /* NetworkCache.swift in Sources */,
@@ -340,6 +347,7 @@
 				279F92EE24B8B36E00349413 /* RequestMethod.swift in Sources */,
 				279F92EB24B8B36E00349413 /* RequestManager+Download.swift in Sources */,
 				279F92F024B8B36E00349413 /* RequestProtocol.swift in Sources */,
+				27D762DD25B884C100A9A66D /* URL+RequestHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,6 +380,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -435,6 +444,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -478,6 +488,7 @@
 				INFOPLIST_FILE = NetworkUtilsKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -503,6 +514,7 @@
 				INFOPLIST_FILE = NetworkUtilsKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

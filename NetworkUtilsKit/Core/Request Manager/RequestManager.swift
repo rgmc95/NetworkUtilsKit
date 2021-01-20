@@ -37,13 +37,13 @@ public class RequestManager {
     /// Interval before request time out
     public var downloadTimeoutInterval: TimeInterval?
     
+    internal var observation: NSKeyValueObservation?
+    
     // MARK: - Init
     private init() {
         self.requestConfiguration = URLSessionConfiguration.default
         self.downloadConfiguration = URLSessionConfiguration.default
     }
-
-    internal var observation: NSKeyValueObservation?
 }
 
 // MARK: - Utils
@@ -92,8 +92,10 @@ extension RequestManager {
     }
 
     private func getJSONBodyData(parameters: Parameters?,
-                                 authentification: AuthentificationProtocol?) -> Data?  {
-        var finalBodyParameters:Parameters = [:]
+                                 authentification: AuthentificationProtocol?) -> Data? {
+        
+        var finalBodyParameters: Parameters = [:]
+        
         // Authentification
         authentification?.parameters.forEach {
             switch authentification?.encoding {
@@ -106,20 +108,21 @@ extension RequestManager {
         }
 
         // Parameters
-        parameters?.forEach({
+        parameters?.forEach {
             finalBodyParameters[$0.key] = $0.value
-        })
+        }
 
-        var dataBody:Data?
+        var dataBody: Data?
+        
         if !finalBodyParameters.isEmpty {
             if JSONSerialization.isValidJSONObject(finalBodyParameters) {
                 do {
                     dataBody = try JSONSerialization.data(withJSONObject: finalBodyParameters, options: [])
                 } catch {
-                    log(DefaultLogType.data, "JSON is invalid")
+                    log(DefaultLogType.data, "JSON is invalid", error: error)
                 }
             } else {
-                log(DefaultLogType.data, "JSON is invalid")
+                log(DefaultLogType.data, "JSON is invalid", error: RequestError.json)
             }
         }
 
@@ -151,7 +154,7 @@ extension RequestManager {
                                port: Int?,
                                method: RequestMethod,
                                parameters: Parameters? = nil,
-                               fileList:[String:URL]? = nil,
+                               fileList: [String: URL]? = nil,
                                encoding: Encoding = .url,
                                headers: Headers? = nil,
                                authentification: AuthentificationProtocol? = nil) throws -> URLRequest {
@@ -170,7 +173,6 @@ extension RequestManager {
         request.httpMethod = method.rawValue
         
         // Final headers
-        var  boundary:String? // used for multipart Form-data
         let finalHeaders = self.getHeaders(headers: headers,
                                            authentification: authentification)
         finalHeaders.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
@@ -178,26 +180,23 @@ extension RequestManager {
         case .json:
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpBody = self.getJSONBodyData(parameters: parameters, authentification: authentification)
+            
         case .formData:
-            request.buildFormDataBody { (formData) in
+            request.buildFormDataBody { formData in
+                
                 //1. add URL to local file
-                if let fileList = fileList {
-                    for (fileName,oneFile) in fileList {
-                        try? formData.append(fileUrl: oneFile, name: fileName)
-                    }
+                for (fileName, oneFile) in fileList ?? [:] {
+                    try? formData.append(fileUrl: oneFile, name: fileName)
                 }
-
+                
                 //3. Add string parameters
-                if let parameters = parameters {
-                    for (paramName, paramValue) in parameters
-                    {
-                        if let paramValue = paramValue as? String {
-                            formData.append(value: paramValue, name: paramName)
-                        }
+                for (paramName, paramValue) in parameters ?? [:] {
+                    if let paramValue: String = paramValue as? String {
+                        formData.append(value: paramValue, name: paramName)
                     }
                 }
             }
-
+            
         default: break
         }
         return request

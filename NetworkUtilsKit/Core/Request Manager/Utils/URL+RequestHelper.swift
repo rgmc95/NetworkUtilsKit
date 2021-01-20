@@ -10,22 +10,30 @@ import UtilsKit
 import MobileCoreServices
 
 extension URL {
-
+    
+    internal var mimeType: String {
+        self.contentType(for: self.pathExtension)
+    }
+    
     private func contentType(for pathExtension: String) -> String {
-        guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, nil)?.takeRetainedValue() else {
+        guard
+            let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
+                                                            pathExtension as CFString,
+                                                            nil)?.takeRetainedValue()
+        else {
             return "application/octet-stream"
         }
+        
         let contentTypeCString = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()
-        guard let contentType = contentTypeCString as String? else {
+        
+        guard
+            let contentType = contentTypeCString as String?
+        else {
             return "application/octet-stream"
         }
         return contentType
     }
-
-    var mimeType:String {
-        return self.contentType(for: self.pathExtension)
-    }
-
+    
     /**
      Get the content of a file at URL
      - returns: data of the retrieved file or nil.

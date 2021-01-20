@@ -33,7 +33,7 @@ public protocol RequestProtocol {
     var parameters: Parameters? { get }
 
     /// Request URL of local files in an array if needed
-    var fileList: [String:URL]? { get }
+    var fileList: [String: URL]? { get }
     
     /// Request encoding
     var encoding: Encoding { get }
@@ -80,32 +80,32 @@ extension RequestProtocol {
     
     /// Request identifier
     public var identifier: String? { nil }
-    */
+     */
     
     /**
-        Send request and return response or error, with progress value
+     Send request and return response or error, with progress value
      */
-    public func responseData(   completion: ((Result<NetworkResponse, Error>) -> Void)? = nil,
-                                progressBlock:((Double) -> Void)? = nil ) {
-
-        RequestManager.shared.request(self) { (result) in
-            switch result {
-            case .success(let response):
-                if let cacheKey = self.cacheKey {
-                    NetworkCache.shared.set(response.data, for: cacheKey)
-                }
-                completion?(result)
-
-            case .failure(let error):
-                if let cacheKey = self.cacheKey, let data = NetworkCache.shared.get(cacheKey) {
-                    completion?(.success((statusCode: (error as? RequestError)?.statusCode, data: data)))
-                } else {
-                    completion?(result)
-                }
-            }
-        } progressBlock: { (progress) in
-            progressBlock?(progress)
-        }
+    public func responseData(completion: ((Result<NetworkResponse, Error>) -> Void)? = nil,
+                             progressBlock: ((Double) -> Void)? = nil ) {
+        RequestManager.shared.request(self,
+                                      result: { result in
+                                        switch result {
+                                        case .success(let response):
+                                            if let cacheKey = self.cacheKey {
+                                                NetworkCache.shared.set(response.data, for: cacheKey)
+                                            }
+                                            completion?(result)
+                                            
+                                        case .failure(let error):
+                                            if let cacheKey = self.cacheKey, let data = NetworkCache.shared.get(cacheKey) {
+                                                completion?(.success((statusCode: (error as? RequestError)?.statusCode, data: data)))
+                                            } else {
+                                                completion?(result)
+                                            }
+                                        }
+                                      }, progressBlock: { progress in
+                                        progressBlock?(progress)
+                                      })
     }
 
     /**
@@ -120,8 +120,8 @@ extension RequestProtocol {
      */
     public func response<T: Decodable>(_ type: T.Type,
                                        completion: ((Result<T, Error>) -> Void)? = nil,
-                                       progressBlock:((Double) -> Void)? = nil ) {
-        self.responseData { (result) in
+                                       progressBlock: ((Double) -> Void)? = nil ) {
+        self.responseData { result in
             switch result {
             case .success(let response):
                 guard let data = response.data else { completion?(.failure(ResponseError.data)); return }
@@ -129,7 +129,7 @@ extension RequestProtocol {
                 completion?(.success(objects))
             case .failure(let error): completion?(.failure(error))
             }
-        } progressBlock: { (progress) in
+        } progressBlock: { progress in
             progressBlock?(progress)
         }
     }
@@ -147,14 +147,14 @@ extension RequestProtocol {
         Send request and return  error if failed
      */
     public func send(completion: ((Result<Void, Error>) -> Void)? = nil,
-                     progressBlock:((Double) -> Void)? = nil ) {
+                     progressBlock: ((Double) -> Void)? = nil ) {
 
         self.responseData { result in
             switch result {
             case .success: completion?(.success(()))
             case .failure(let error): completion?(.failure(error))
             }
-        } progressBlock: { (progress) in
+        } progressBlock: { progress in
             progressBlock?(progress)
         }
     }

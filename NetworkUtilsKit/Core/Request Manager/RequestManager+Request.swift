@@ -19,7 +19,7 @@ extension RequestManager {
         port: Int?,
         method: RequestMethod = .get,
         parameters: Parameters? = nil,
-        fileList: [String:URL]? = nil,
+        fileList: [String: URL]? = nil,
         encoding: Encoding = .url,
         headers: Headers? = nil,
         authentification: AuthentificationProtocol? = nil,
@@ -53,9 +53,7 @@ extension RequestManager {
                             return
                         }
 
-                        #if DEBUG
-                        print(String(data: data ?? Data(), encoding: .utf8))
-                        #endif
+                        log(NetworkLogType.sending(method.rawValue), String(data: data ?? Data(), encoding: .utf8))
                         
                         if response.statusCode >= 200 && response.statusCode < 300 {
                             log(NetworkLogType.success(method.rawValue), requestId)
@@ -70,10 +68,10 @@ extension RequestManager {
                     }
                 }
 
-                if let progressBlock = progressBlock {
+                if #available(iOS 11.0, *), let progressBlock: ((Double) -> Void) = progressBlock {
                     // Don't forget to invalidate the observation when you don't need it anymore.
                     self.observation = task.progress.observe(\.fractionCompleted) { progress, _ in
-                        log(NetworkLogType.sending(method.rawValue), "progress : \(progress.fractionCompleted)", error: nil)
+                        log(NetworkLogType.sending(method.rawValue), "Progress : \(progress.fractionCompleted)", error: nil)
                         DispatchQueue.main.async {
                             progressBlock(progress.fractionCompleted)
                         }
@@ -81,7 +79,6 @@ extension RequestManager {
                 }
 
                 task.resume()
-
             } catch {
                 self.observation?.invalidate()
                 completion?(.failure(error))
@@ -97,7 +94,7 @@ extension RequestManager {
      */
     public func request(_ request: RequestProtocol,
                         result: ((Result<NetworkResponse, Error>) -> Void)? = nil,
-                        progressBlock:((Double) -> Void)? = nil) {
+                        progressBlock: ((Double) -> Void)? = nil) {
 
         self.request(scheme: request.scheme,
                      host: request.host,

@@ -9,39 +9,43 @@ import Foundation
 
 extension URLRequest {
 
-    class MultipartFormData {
-        var request: URLRequest
+    internal class MultipartFormData {
+        
+        internal var request: URLRequest
+        
         private lazy var boundary: String = {
-           return String(format: "%08X%08X", arc4random(), arc4random())
+            String(format: "%08X%08X",
+                   UInt32.random(in: UInt32.min..<UInt32.max),
+                   UInt32.random(in: UInt32.min..<UInt32.max))
         }()
 
-        init(request: URLRequest) {
+        internal init(request: URLRequest) {
             self.request = request
         }
 
-        func append(value: String, name: String) {
+        internal func append(value: String, name: String) {
             request.httpBody?.append("--\(boundary)\r\n".data())
             request.httpBody?.append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data())
             request.httpBody?.append("\(value)\r\n".data())
         }
 
-        func append(filePath: String, name: String) throws {
+        internal func append(filePath: String, name: String) throws {
             let url = URL(fileURLWithPath: filePath)
             try append(fileUrl: url, name: name)
         }
 
-        func append(fileUrl: URL, name: String) throws {
-            let fileName = fileUrl.lastPathComponent
-            let mimeType = fileUrl.mimeType
+        internal func append(fileUrl: URL, name: String) throws {
+            let fileName: String = fileUrl.lastPathComponent
+            let mimeType: String = fileUrl.mimeType
             try append(fileUrl: fileUrl, name: name, fileName: fileName, mimeType: mimeType)
         }
 
-        func append(fileUrl: URL, name: String, fileName: String, mimeType: String) throws {
+        internal func append(fileUrl: URL, name: String, fileName: String, mimeType: String) throws {
             let data = try Data(contentsOf: fileUrl)
             append(file: data, name: name, fileName: fileName, mimeType: mimeType)
         }
 
-        func append(file: Data, name: String, fileName: String, mimeType: String) {
+        internal func append(file: Data, name: String, fileName: String, mimeType: String) {
             request.httpBody?.append("--\(boundary)\r\n".data())
             request.httpBody?.append("Content-Disposition: form-data; name=\"\(name)\";".data())
             request.httpBody?.append("filename=\"\(fileName)\"\r\n".data())
@@ -56,7 +60,7 @@ extension URLRequest {
         }
     }
 
-    mutating func buildFormDataBody(constructingBlock: @escaping (_ formData: MultipartFormData) -> Void) {
+    internal mutating func buildFormDataBody(constructingBlock: @escaping (_ formData: MultipartFormData) -> Void) {
         self.httpBody = Data()
         let formData = MultipartFormData(request: self)
         constructingBlock(formData)
@@ -66,7 +70,8 @@ extension URLRequest {
 }
 
 fileprivate extension String {
+    
     func data() -> Data {
-        return self.data(using: .utf8) ?? Data()
+        self.data(using: .utf8) ?? Data()
     }
 }
