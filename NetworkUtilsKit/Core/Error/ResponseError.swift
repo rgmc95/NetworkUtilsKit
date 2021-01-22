@@ -11,7 +11,7 @@ import UtilsKit
 // MARK: - Error
 public enum ResponseError: Error, LocalizedError {
     case unknow
-    case decodable
+    case decodable(type:String?)
     case data
     case json
     case network(response: HTTPURLResponse?)
@@ -19,11 +19,11 @@ public enum ResponseError: Error, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .unknow: return "Response error"
-        case .decodable: return "Decode error"
+        case .decodable (let type): return "Decode error \(type)"
         case .data: return "Data error"
         case .json: return "JSON error"
         case .network(let response):
-            guard let statusCode = response?.statusCode else { return nil }
+            guard let statusCode = response?.statusCode else { return "Unkown Error" }
             return "\(statusCode): \(HTTPURLResponse.localizedString(forStatusCode: statusCode))"
         }
     }

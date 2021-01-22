@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UtilsKit
 
 /// This protocol represents a full request to execute
 public protocol RequestProtocol {
@@ -125,7 +126,11 @@ extension RequestProtocol {
             switch result {
             case .success(let response):
                 guard let data = response.data else { completion?(.failure(ResponseError.data)); return }
-                guard let objects = T.decode(from: data) else { completion?(.failure(ResponseError.decodable)); return }
+                guard let objects = T.decode(from: data) else {
+                    let stringType = "\(T.self)"
+                    let responseError = ResponseError.decodable(type:stringType)
+                    log(NetworkLogType.error("PARSING"), responseError.localizedDescription, error: nil)
+                    completion?(.failure(responseError)); return }
                 completion?(.success(objects))
             case .failure(let error): completion?(.failure(error))
             }
