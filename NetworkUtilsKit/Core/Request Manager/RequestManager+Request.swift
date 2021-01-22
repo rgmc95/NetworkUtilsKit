@@ -19,12 +19,12 @@ extension RequestManager {
         port: Int?,
         method: RequestMethod = .get,
         parameters: Parameters? = nil,
-        fileList: [String:URL]? = nil,
+        fileList: [String: URL]? = nil,
         encoding: Encoding = .url,
         headers: Headers? = nil,
         authentification: AuthentificationProtocol? = nil,
         queue: DispatchQueue = DispatchQueue.main,
-        identifier: String? = nil,
+        description: String? = nil,
         completion: ((Result<NetworkResponse, Error>) -> Void)? = nil,
         progressBlock: ((Double) -> Void)? = nil) {
         
@@ -41,10 +41,10 @@ extension RequestManager {
                                                                 headers: headers,
                                                                 authentification: authentification)
                 
-                let requestId: String = identifier ?? request.url?.absoluteString ?? ""
+                let requestId: String = description ?? request.url?.absoluteString ?? ""
                 request.timeoutInterval = self.requestTimeoutInterval ?? request.timeoutInterval
                 
-                log(NetworkLogType.sending(method.rawValue), requestId)
+                log(NetworkLogType.sending, requestId)
                 let task = URLSession(configuration: self.requestConfiguration).dataTask(with: request) { data, response, _ in
                     queue.async {
                         self.observation?.invalidate()
@@ -53,27 +53,25 @@ extension RequestManager {
                             return
                         }
 
-                        #if DEBUG
-                        print(String(data: data ?? Data(), encoding: .utf8))
-                        #endif
+                        log(NetworkLogType.sending, String(data: data ?? Data(), encoding: .utf8))
                         
                         if response.statusCode >= 200 && response.statusCode < 300 {
-                            log(NetworkLogType.success(method.rawValue), requestId)
+                            log(NetworkLogType.success, requestId)
                             completion?(.success((response.statusCode, data)))
                             return
                         } else {
                             let error = ResponseError.network(response: response)
-                            log(NetworkLogType.error(method.rawValue), requestId, error: error)
+                            log(NetworkLogType.error, requestId, error: error)
                             completion?(.failure(error))
                             return
                         }
                     }
                 }
 
-                if let progressBlock = progressBlock {
+                if #available(iOS 11.0, *), let progressBlock: ((Double) -> Void) = progressBlock {
                     // Don't forget to invalidate the observation when you don't need it anymore.
                     self.observation = task.progress.observe(\.fractionCompleted) { progress, _ in
-                        log(NetworkLogType.sending(method.rawValue), "progress : \(progress.fractionCompleted)", error: nil)
+                        log(NetworkLogType.sending, "Progress : \(progress.fractionCompleted)", error: nil)
                         DispatchQueue.main.async {
                             progressBlock(progress.fractionCompleted)
                         }
@@ -81,7 +79,6 @@ extension RequestManager {
                 }
 
                 task.resume()
-
             } catch {
                 self.observation?.invalidate()
                 completion?(.failure(error))
@@ -97,8 +94,8 @@ extension RequestManager {
      */
     public func request(_ request: RequestProtocol,
                         result: ((Result<NetworkResponse, Error>) -> Void)? = nil,
-                        progressBlock:((Double) -> Void)? = nil) {
-
+                        progressBlock: ((Double) -> Void)? = nil) {
+        
         self.request(scheme: request.scheme,
                      host: request.host,
                      path: request.path,
@@ -110,7 +107,7 @@ extension RequestManager {
                      headers: request.headers,
                      authentification: request.authentification,
                      queue: request.queue,
-                     identifier: request.identifier,
+                     description: request.description,
                      completion: result,
                      progressBlock: progressBlock)
     }

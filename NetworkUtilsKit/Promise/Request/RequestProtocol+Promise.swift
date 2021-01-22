@@ -16,7 +16,7 @@ extension RequestProtocol {
      */
     public func responseData() -> Promise<Data?> {
         Promise { resolver in
-            self.responseData { results in
+            self.response { results in
                 switch results {
                 case .success(let response): resolver.fulfill(response.data)
                 case .failure(let error): resolver.reject(error)

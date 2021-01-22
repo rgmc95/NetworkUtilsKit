@@ -16,7 +16,7 @@ extension RequestProtocol {
      */
     public func response<T: Decodable & CoreDataUpdatable>(_ type: T.Type,
                                                            completion: ((Swift.Result<T, Error>) -> Void)?) {
-        self.responseData { result in
+        self.response { result in
             switch result {
             case .success(let response):
                 guard let data = response.data
