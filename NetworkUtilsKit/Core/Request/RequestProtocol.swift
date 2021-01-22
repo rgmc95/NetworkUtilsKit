@@ -138,7 +138,7 @@ extension RequestProtocol {
                 guard let objects = T.decode(from: data) else {
                     let stringType = "\(T.self)"
                     let responseError = ResponseError.decodable(type:stringType)
-                    log(NetworkLogType.error("PARSING"), responseError.localizedDescription, error: nil)
+                    log(NetworkLogType.error, responseError.localizedDescription, error: nil)
                     completion?(.failure(responseError)); return }
                 completion?(.success(objects))
             case .failure(let error): completion?(.failure(error))

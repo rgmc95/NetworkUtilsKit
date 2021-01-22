@@ -101,7 +101,10 @@ extension RequestProtocol where Self: MockProtocol {
             switch result {
             case .success(let response):
                 guard let data = response.data else { completion?(.failure(ResponseError.data)); return }
-                guard let objects = T.decode(from: data) else { completion?(.failure(ResponseError.decodable)); return }
+                guard let objects = T.decode(from: data) else {
+                    let stringType = "\(T.self)"
+                    let responseError = ResponseError.decodable(type:stringType)
+                    completion?(.failure(responseError)); return }
                 completion?(.success(objects))
             case .failure(let error): completion?(.failure(error))
             }
