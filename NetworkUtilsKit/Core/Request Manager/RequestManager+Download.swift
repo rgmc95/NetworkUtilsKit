@@ -20,8 +20,16 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
     init(destination: URL, identifier: String?, completion: ((Result<Int, Error>) -> Void)?, progress: ((Float) -> Void)?) {
         self.destination = destination
         self.identifier = identifier
-        self.completion = completion
-        self.progress = progress
+        self.completion = { result -> Void in
+            DispatchQueue.main.async {
+                completion?(result)
+            }
+        }
+        self.progress = { value in
+            DispatchQueue.main.async {
+                progress?(value)
+            }
+        }
     }
 
     // MARK : URLSessionDownloadDelegate
@@ -30,7 +38,9 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
                     didFinishDownloadingTo location: URL) {
         
         guard let response = downloadTask.response as? HTTPURLResponse else {
-            completion?(.failure(ResponseError.unknow))
+
+                self.completion?(.failure(ResponseError.unknow))
+
             return
         }
         
@@ -41,15 +51,17 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
 
             do {
                 try FileManager.default.moveItem(at: location, to: destination)
-                completion?(.success(response.statusCode))
+                    self.completion?(.success(response.statusCode))
             } catch {
-                completion?(.failure(error))
+                self.completion?(.failure(error))
             }
             return
         } else {
             let error = ResponseError.network(response: response)
             log(NetworkLogType.error, identifier, error: error)
-            completion?(.failure(error))
+
+                self.completion?(.failure(error))
+
             return
         }
     }
@@ -57,14 +69,16 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if error == nil { return }
         guard let response = task.response as? HTTPURLResponse else {
-            completion?(.failure(ResponseError.unknow))
+            self.completion?(.failure(ResponseError.unknow))
             return
         }
         
         let requestError = ResponseError.network(response: response)
         
         log(NetworkLogType.error, identifier, error: requestError)
-        completion?(.failure(requestError))
+
+            self.completion?(.failure(requestError))
+
         return
     }
     
@@ -73,8 +87,10 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
                     didWriteData bytesWritten: Int64,
                     totalBytesWritten: Int64,
                     totalBytesExpectedToWrite: Int64) {
-        let progressValue = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
-        progress?(progressValue)
+
+            let progressValue = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
+            self.progress?(progressValue)
+
     }
 }
 
@@ -92,66 +108,63 @@ extension RequestManager {
                               encoding: Encoding = .url,
                               headers: Headers? = nil,
                               authentification: AuthentificationProtocol? = nil,
-                              queue: DispatchQueue = DispatchQueue.main,
                               identifier: String? = nil,
                               completion: ((Result<Int, Error>) -> Void)? = nil,
                               progress: ((Float) -> Void)? = nil) {
-        queue.async {
-            var request: URLRequest
-            
-            do {
-                request = try self.buildRequest(scheme: scheme,
-                                                host: host,
-                                                path: path,
-                                                port: port,
-                                                method: method,
-                                                parameters: parameters,
-                                                encoding: encoding,
-                                                headers: headers,
-                                                authentification: authentification)
-            } catch {
-                completion?(.failure(error))
-                return
-            }
-            
-            self.downloadFileWithRequest(request: request, destinationURL: destinationURL, queue: queue, identifier: identifier, forceDownload: forceDownload, completion: completion, progress: progress)
+
+        var request: URLRequest
+        do {
+            request = try self.buildRequest(scheme: scheme,
+                                            host: host,
+                                            path: path,
+                                            port: port,
+                                            method: method,
+                                            parameters: parameters,
+                                            encoding: encoding,
+                                            headers: headers,
+                                            authentification: authentification)
+        } catch {
+            completion?(.failure(error))
+            return
         }
+
+        self.downloadFileWithRequest(request: request, destinationURL: destinationURL, identifier: identifier, forceDownload: forceDownload, completion: completion, progress: progress)
     }
 
     private func downloadFileWithRequest(request : URLRequest,
                                          destinationURL: URL,
-                                         queue: DispatchQueue = DispatchQueue.main,
                                          identifier: String? = nil,
                                          forceDownload: Bool? = false,
                                          completion: ((Result<Int, Error>) -> Void)? = nil,
                                          progress: ((Float) -> Void)? = nil) {
-        queue.async {
-            var request = request // mutable request
-            let requestId: String = identifier ?? request.url?.absoluteString ?? ""
 
-            if FileManager.default.fileExists(atPath: destinationURL.path) {
-                if forceDownload == true {
-                    //Remove file before download it again
-                    try? FileManager.default.removeItem(atPath: destinationURL.path)
-                } else {
-                    //return success, file already exists
-                    completion?(.success(200))
-                }
+        var request = request // mutable request
+        let requestId: String = identifier ?? request.url?.absoluteString ?? ""
+
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            if forceDownload == true {
+                //Remove file before download it again
+                try? FileManager.default.removeItem(atPath: destinationURL.path)
+            } else {
+                //return success, file already exists
+                completion?(.success(200))
+                return
             }
-
-            let delegate = NetworkDownloadManagement(destination: destinationURL, identifier: requestId, completion: completion, progress: progress)
-            let session = URLSession(configuration: self.downloadConfiguration, delegate: delegate, delegateQueue: nil)
-
-            if let timeoutInterval = self.downloadTimeoutInterval {
-                request.timeoutInterval = timeoutInterval
-            }
-
-            log(NetworkLogType.download, requestId)
-
-            session.downloadTask(with: request).resume()
         }
+
+        let delegate = NetworkDownloadManagement(destination: destinationURL, identifier: requestId, completion: completion, progress: progress)
+
+        // downloadConfiguration is default (delegate Queue is Background by default)
+        let session = URLSession(configuration: self.downloadConfiguration, delegate: delegate, delegateQueue: nil)
+        if let timeoutInterval = self.downloadTimeoutInterval {
+            request.timeoutInterval = timeoutInterval
+        }
+
+        log(NetworkLogType.download, requestId)
+        
+        session.downloadTask(with: request).resume()
     }
-    
+
     /**
      Download url with request and gives the progress
      - parameter destinationURL : URL where the file will be copied
@@ -165,6 +178,7 @@ extension RequestManager {
                          forceDownload: Bool? = false,
                          result: ((Result<Int, Error>) -> Void)? = nil,
                          progress: ((Float) -> Void)? = nil) {
+
         self.downloadFile(destinationURL: destinationURL,
                           forceDownload: forceDownload,
                           scheme: request.scheme,
@@ -176,7 +190,6 @@ extension RequestManager {
                           encoding: request.encoding,
                           headers: request.headers,
                           authentification: request.authentification,
-                          queue: request.queue,
                           identifier: request.identifier,
                           completion: result,
                           progress: progress)
