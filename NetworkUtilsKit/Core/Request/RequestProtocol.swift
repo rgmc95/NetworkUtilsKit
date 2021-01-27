@@ -182,20 +182,6 @@ extension RequestProtocol {
             progressBlock?(progress)
         }
     }
-    
-    // MARK: Download
-    /**
-     Download request
-     - parameter URL : URL
-     - parameter result: Download Result
-     - parameter progress: Download progress
-     
-     */
-    public func download(at URL: URL,
-                         completion: ((Result<Int, Error>) -> Void)? = nil,
-                         progress: ((URLSessionDownloadTask) -> Void)? = nil) {
-        RequestManager.shared.download(at: URL, request: self, result: completion, progress: progress)
-    }
 }
 
 extension RequestProtocol {

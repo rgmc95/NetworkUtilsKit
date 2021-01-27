@@ -15,15 +15,16 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
     let destination: URL
     let identifier: String?
     let completion: ((Result<Int, Error>) -> Void)?
-    let progress: ((URLSessionDownloadTask) -> Void)?
-    
-    init(destination: URL, identifier: String?, completion: ((Result<Int, Error>) -> Void)?, progress: ((URLSessionDownloadTask) -> Void)?) {
+    let progress: ((Float) -> Void)?
+
+    init(destination: URL, identifier: String?, completion: ((Result<Int, Error>) -> Void)?, progress: ((Float) -> Void)?) {
         self.destination = destination
         self.identifier = identifier
         self.completion = completion
         self.progress = progress
     }
-    
+
+    // MARK : URLSessionDownloadDelegate
     func urlSession(_ session: URLSession,
                     downloadTask: URLSessionDownloadTask,
                     didFinishDownloadingTo location: URL) {
@@ -36,14 +37,14 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
         if response.statusCode >= 200 && response.statusCode < 300 {
             
             log(NetworkLogType.download, identifier)
-            
+
+
             do {
                 try FileManager.default.moveItem(at: location, to: destination)
                 completion?(.success(response.statusCode))
             } catch {
                 completion?(.failure(error))
             }
-            
             return
         } else {
             let error = ResponseError.network(response: response)
@@ -72,7 +73,8 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
                     didWriteData bytesWritten: Int64,
                     totalBytesWritten: Int64,
                     totalBytesExpectedToWrite: Int64) {
-        progress?(downloadTask)
+        let progressValue = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
+        progress?(progressValue)
     }
 }
 
@@ -80,6 +82,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
 extension RequestManager {
     
     private func downloadFile(destinationURL: URL,
+                              forceDownload: Bool? = false,
                               scheme: String,
                               host: String,
                               path: String,
@@ -92,7 +95,7 @@ extension RequestManager {
                               queue: DispatchQueue = DispatchQueue.main,
                               identifier: String? = nil,
                               completion: ((Result<Int, Error>) -> Void)? = nil,
-                              progress: ((URLSessionDownloadTask) -> Void)? = nil) {
+                              progress: ((Float) -> Void)? = nil) {
         queue.async {
             var request: URLRequest
             
@@ -111,7 +114,7 @@ extension RequestManager {
                 return
             }
             
-            self.downloadFileWithRequest(request: request, destinationURL: destinationURL, queue: queue, identifier: identifier, completion: completion, progress: progress)
+            self.downloadFileWithRequest(request: request, destinationURL: destinationURL, queue: queue, identifier: identifier, forceDownload: forceDownload, completion: completion, progress: progress)
         }
     }
 
@@ -119,11 +122,22 @@ extension RequestManager {
                                          destinationURL: URL,
                                          queue: DispatchQueue = DispatchQueue.main,
                                          identifier: String? = nil,
+                                         forceDownload: Bool? = false,
                                          completion: ((Result<Int, Error>) -> Void)? = nil,
-                                         progress: ((URLSessionDownloadTask) -> Void)? = nil) {
+                                         progress: ((Float) -> Void)? = nil) {
         queue.async {
             var request = request // mutable request
             let requestId: String = identifier ?? request.url?.absoluteString ?? ""
+
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                if forceDownload == true {
+                    //Remove file before download it again
+                    try? FileManager.default.removeItem(atPath: destinationURL.path)
+                } else {
+                    //return success, file already exists
+                    completion?(.success(200))
+                }
+            }
 
             let delegate = NetworkDownloadManagement(destination: destinationURL, identifier: requestId, completion: completion, progress: progress)
             let session = URLSession(configuration: self.downloadConfiguration, delegate: delegate, delegateQueue: nil)
@@ -142,14 +156,17 @@ extension RequestManager {
      Download url with request and gives the progress
      - parameter destinationURL : URL where the file will be copied
      - parameter request: Request
+     - parameter forceDownload : download the file event if it already exists and delete previous existing. Return existing otherwise
      - parameter result: Download Result
      - parameter progress: Download progress
      */
     public func download(destinationURL: URL,
                          request: RequestProtocol,
+                         forceDownload: Bool? = false,
                          result: ((Result<Int, Error>) -> Void)? = nil,
-                         progress: ((URLSessionDownloadTask) -> Void)? = nil) {
+                         progress: ((Float) -> Void)? = nil) {
         self.downloadFile(destinationURL: destinationURL,
+                          forceDownload: forceDownload,
                           scheme: request.scheme,
                           host: request.host,
                           path: request.path,
@@ -169,17 +186,20 @@ extension RequestManager {
      Download url with request and gives the progress
      - parameter sourceURL : URL of the file to download
      - parameter destinationURL : URL where the file will be copied
+     - parameter forceDownload : download the file event if it already exists and delete previous existing. Return existing otherwise
      - parameter result: Download Result
      - parameter progress: Download progress
      */
     public func download(sourceURL: URL,
                          destinationURL: URL,
+                         forceDownload: Bool? = false,
                          result: ((Result<Int, Error>) -> Void)? = nil,
-                         progress: ((URLSessionDownloadTask) -> Void)? = nil) {
+                         progress: ((Float) -> Void)? = nil) {
 
         var request = URLRequest(url: sourceURL)
         self.downloadFileWithRequest(request: request,
                                      destinationURL: destinationURL,
+                                     forceDownload: forceDownload,
                                      completion: result,
                                      progress: progress)
 
