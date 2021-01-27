@@ -79,20 +79,20 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
 // MARK: - Download
 extension RequestManager {
     
-    private func downloadRequest(at URL: URL,
-                                 scheme: String,
-                                 host: String,
-                                 path: String,
-                                 port: Int?,
-                                 method: RequestMethod = .get,
-                                 parameters: Parameters? = nil,
-                                 encoding: Encoding = .url,
-                                 headers: Headers? = nil,
-                                 authentification: AuthentificationProtocol? = nil,
-                                 queue: DispatchQueue = DispatchQueue.main,
-                                 identifier: String? = nil,
-                                 completion: ((Result<Int, Error>) -> Void)? = nil,
-                                 progress: ((URLSessionDownloadTask) -> Void)? = nil) {
+    private func downloadFile(destinationURL: URL,
+                              scheme: String,
+                              host: String,
+                              path: String,
+                              port: Int?,
+                              method: RequestMethod = .get,
+                              parameters: Parameters? = nil,
+                              encoding: Encoding = .url,
+                              headers: Headers? = nil,
+                              authentification: AuthentificationProtocol? = nil,
+                              queue: DispatchQueue = DispatchQueue.main,
+                              identifier: String? = nil,
+                              completion: ((Result<Int, Error>) -> Void)? = nil,
+                              progress: ((URLSessionDownloadTask) -> Void)? = nil) {
         queue.async {
             var request: URLRequest
             
@@ -111,45 +111,77 @@ extension RequestManager {
                 return
             }
             
+            self.downloadFileWithRequest(request: request, destinationURL: destinationURL, queue: queue, identifier: identifier, completion: completion, progress: progress)
+        }
+    }
+
+    private func downloadFileWithRequest(request : URLRequest,
+                                         destinationURL: URL,
+                                         queue: DispatchQueue = DispatchQueue.main,
+                                         identifier: String? = nil,
+                                         completion: ((Result<Int, Error>) -> Void)? = nil,
+                                         progress: ((URLSessionDownloadTask) -> Void)? = nil) {
+        queue.async {
+            var request = request // mutable request
             let requestId: String = identifier ?? request.url?.absoluteString ?? ""
-            
-            let delegate = NetworkDownloadManagement(destination: URL, identifier: requestId, completion: completion, progress: progress)
+
+            let delegate = NetworkDownloadManagement(destination: destinationURL, identifier: requestId, completion: completion, progress: progress)
             let session = URLSession(configuration: self.downloadConfiguration, delegate: delegate, delegateQueue: nil)
-            
+
             if let timeoutInterval = self.downloadTimeoutInterval {
                 request.timeoutInterval = timeoutInterval
             }
-            
+
             log(NetworkLogType.download, requestId)
-            
+
             session.downloadTask(with: request).resume()
         }
     }
     
     /**
      Download url with request and gives the progress
-     - parameter URL : URL
+     - parameter destinationURL : URL where the file will be copied
      - parameter request: Request
      - parameter result: Download Result
      - parameter progress: Download progress
      */
-    public func download(at URL: URL,
+    public func download(destinationURL: URL,
                          request: RequestProtocol,
                          result: ((Result<Int, Error>) -> Void)? = nil,
                          progress: ((URLSessionDownloadTask) -> Void)? = nil) {
-        self.downloadRequest(at: URL,
-                             scheme: request.scheme,
-                             host: request.host,
-                             path: request.path,
-                             port: request.port,
-                             method: request.method,
-                             parameters: request.parameters,
-                             encoding: request.encoding,
-                             headers: request.headers,
-                             authentification: request.authentification,
-                             queue: request.queue,
-                             identifier: request.identifier,
-                             completion: result,
-                             progress: progress)
+        self.downloadFile(destinationURL: destinationURL,
+                          scheme: request.scheme,
+                          host: request.host,
+                          path: request.path,
+                          port: request.port,
+                          method: request.method,
+                          parameters: request.parameters,
+                          encoding: request.encoding,
+                          headers: request.headers,
+                          authentification: request.authentification,
+                          queue: request.queue,
+                          identifier: request.identifier,
+                          completion: result,
+                          progress: progress)
+    }
+
+    /**
+     Download url with request and gives the progress
+     - parameter sourceURL : URL of the file to download
+     - parameter destinationURL : URL where the file will be copied
+     - parameter result: Download Result
+     - parameter progress: Download progress
+     */
+    public func download(sourceURL: URL,
+                         destinationURL: URL,
+                         result: ((Result<Int, Error>) -> Void)? = nil,
+                         progress: ((URLSessionDownloadTask) -> Void)? = nil) {
+
+        var request = URLRequest(url: sourceURL)
+        self.downloadFileWithRequest(request: request,
+                                     destinationURL: destinationURL,
+                                     completion: result,
+                                     progress: progress)
+
     }
 }
