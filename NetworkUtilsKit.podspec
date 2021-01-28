@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'NetworkUtilsKit'
-  s.version = '1.0.2'
+  s.version = '1.0.3'
   s.license = {
     :type => 'Copyright',
     :text => <<-LICENSE
