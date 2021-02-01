@@ -45,11 +45,11 @@ extension RequestManager {
                 request.timeoutInterval = self.requestTimeoutInterval ?? request.timeoutInterval
                 
                 log(NetworkLogType.sending, requestId)
-                let task = URLSession(configuration: self.requestConfiguration).dataTask(with: request) { data, response, _ in
+                let task = URLSession(configuration: self.requestConfiguration).dataTask(with: request) { data, response, error in
                     queue.async {
                         self.observation?.invalidate()
                         guard let response = response as? HTTPURLResponse else {
-                            completion?(.failure(ResponseError.unknow))
+                            completion?(.failure(error ?? ResponseError.unknow))
                             return
                         }
 
