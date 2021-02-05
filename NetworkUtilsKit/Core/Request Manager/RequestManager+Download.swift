@@ -32,7 +32,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
         }
     }
 
-    // MARK : URLSessionDownloadDelegate
+    // MARK: URLSessionDownloadDelegate
     func urlSession(_ session: URLSession,
                     downloadTask: URLSessionDownloadTask,
                     didFinishDownloadingTo location: URL) {
@@ -88,9 +88,8 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
                     totalBytesWritten: Int64,
                     totalBytesExpectedToWrite: Int64) {
 
-            let progressValue = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
+            let progressValue = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
             self.progress?(progressValue)
-
     }
 }
 
@@ -98,7 +97,6 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
 extension RequestManager {
     
     private func downloadFile(destinationURL: URL,
-                              forceDownload: Bool? = false,
                               scheme: String,
                               host: String,
                               path: String,
@@ -109,6 +107,7 @@ extension RequestManager {
                               headers: Headers? = nil,
                               authentification: AuthentificationProtocol? = nil,
                               identifier: String? = nil,
+                              forceDownload: Bool? = false,
                               completion: ((Result<Int, Error>) -> Void)? = nil,
                               progress: ((Float) -> Void)? = nil) {
 
@@ -128,17 +127,22 @@ extension RequestManager {
             return
         }
 
-        self.downloadFileWithRequest(request: request, destinationURL: destinationURL, identifier: identifier, forceDownload: forceDownload, completion: completion, progress: progress)
+        self.downloadFileWithRequest(request: request,
+                                     destinationURL: destinationURL,
+                                     identifier: identifier,
+                                     forceDownload: forceDownload,
+                                     completion: completion,
+                                     progress: progress)
     }
 
-    private func downloadFileWithRequest(request : URLRequest,
+    private func downloadFileWithRequest(request: URLRequest,
                                          destinationURL: URL,
                                          identifier: String? = nil,
                                          forceDownload: Bool? = false,
                                          completion: ((Result<Int, Error>) -> Void)? = nil,
                                          progress: ((Float) -> Void)? = nil) {
 
-        var request = request // mutable request
+        var request: URLRequest = request // mutable request
         let requestId: String = identifier ?? request.url?.absoluteString ?? ""
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
@@ -180,7 +184,6 @@ extension RequestManager {
                          progress: ((Float) -> Void)? = nil) {
 
         self.downloadFile(destinationURL: destinationURL,
-                          forceDownload: forceDownload,
                           scheme: request.scheme,
                           host: request.host,
                           path: request.path,
@@ -191,6 +194,7 @@ extension RequestManager {
                           headers: request.headers,
                           authentification: request.authentification,
                           identifier: request.identifier,
+                          forceDownload: forceDownload,
                           completion: result,
                           progress: progress)
     }
@@ -209,12 +213,10 @@ extension RequestManager {
                          result: ((Result<Int, Error>) -> Void)? = nil,
                          progress: ((Float) -> Void)? = nil) {
 
-        var request = URLRequest(url: sourceURL)
-        self.downloadFileWithRequest(request: request,
+        self.downloadFileWithRequest(request: URLRequest(url: sourceURL),
                                      destinationURL: destinationURL,
                                      forceDownload: forceDownload,
                                      completion: result,
                                      progress: progress)
-
     }
 }

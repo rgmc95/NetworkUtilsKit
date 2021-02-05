@@ -27,11 +27,5 @@ Pod::Spec.new do |s|
     ext.source_files = 'NetworkUtilsKit/Promise/**/*.{h,m,swift}'
   end
 
-  s.subspec 'CoreDataUtilsKit' do |ext|
-    ext.dependency 'NetworkUtilsKit/Core'
-    ext.dependency 'CoreDataUtilsKit', '~> 1.1'
-    ext.source_files = 'NetworkUtilsKit/CoreData/**/*.{h,m,swift}'
-  end
-
 end
 

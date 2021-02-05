@@ -101,19 +101,12 @@ extension RequestProtocol where Self: MockProtocol {
             switch result {
             case .success(let response):
                 guard let data = response.data else { completion?(.failure(ResponseError.data)); return }
-                do {
-                    let objects = try T.decode(from: data) // decode object
-                    if let objects = objects {
-                        completion?(.success(objects))
-                    }
-                    else {
-                        let responseError = ResponseError.decodable(type:"\(T.self)")
-                        log(NetworkLogType.error, responseError.errorDescription, error: nil)
-                        completion?(.failure(responseError))
-                    }
-                } catch {
-                    let errorMessage = (error as? DecodingError).debugDescription ?? error.localizedDescription
-                    let responseError = ResponseError.decodable(type:"\(T.self)", message:errorMessage)
+                
+                let objects = T.decode(from: data)
+                if let objects: T = objects {
+                    completion?(.success(objects))
+                } else {
+                    let responseError = ResponseError.decodable(type: "\(T.self)")
                     log(NetworkLogType.error, responseError.errorDescription, error: nil)
                     completion?(.failure(responseError))
                 }

@@ -11,7 +11,8 @@ import UtilsKit
 // MARK: - Error
 public enum ResponseError: Error, LocalizedError {
     case unknow
-    case decodable(type:String?, message:String? = nil)
+    case decodable(type: String?,
+                   message: String? = nil)
     case data
     case json
     case network(response: HTTPURLResponse?)
@@ -19,14 +20,24 @@ public enum ResponseError: Error, LocalizedError {
     
     public var errorDescription: String? {
         switch self {
-        case .unknow: return "Response error"
-        case .decodable (let type, let message): return "Decode error for type \(type ?? "") \(message ?? "")"
-        case .data: return "Data error"
-        case .json: return "JSON error"
+        case .unknow:
+            return "Response error"
+            
+        case .decodable (let type, let message):
+            return "Decode error for type \(type ?? "") \(message ?? "")"
+            
+        case .data:
+            return "Data error"
+            
+        case .json:
+            return "JSON error"
+            
         case .network(let response):
             guard let statusCode = response?.statusCode else { return "Unkown Error" }
             return "\(statusCode): \(HTTPURLResponse.localizedString(forStatusCode: statusCode))"
-        case .noMock: return "No mock file found"
+            
+        case .noMock:
+            return "No mock file found"
         }
     }
 }
