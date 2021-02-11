@@ -171,7 +171,7 @@ extension RequestManager {
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
-        
+        request.cachePolicy = .reloadIgnoringLocalCacheData // allow reponse 304 instead of 200.
         // Final headers
         let finalHeaders = self.getHeaders(headers: headers, authentification: authentification)
         finalHeaders.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }

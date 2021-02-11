@@ -45,6 +45,8 @@ extension RequestManager {
                 request.timeoutInterval = self.requestTimeoutInterval ?? request.timeoutInterval
                 
                 log(NetworkLogType.sending, requestId)
+                //log(NetworkLogType.sending, String(data: data ?? Data(), encoding: .utf8))
+
                 let task = URLSession(configuration: self.requestConfiguration).dataTask(with: request) { data, response, error in
                     queue.async {
                         self.observation?.invalidate()
@@ -53,11 +55,15 @@ extension RequestManager {
                             return
                         }
 
-                        log(NetworkLogType.sending, String(data: data ?? Data(), encoding: .utf8))
-                        
                         if response.statusCode >= 200 && response.statusCode < 300 {
+                            let isFromCache = false
                             log(NetworkLogType.success, requestId)
                             completion?(.success((response.statusCode, data)))
+                            return
+                        } else if response.statusCode == 304 {
+                            log(NetworkLogType.error, requestId, error: error)
+                            let error = ResponseError.network(response: response)
+                            completion?(.failure(error))
                             return
                         } else {
                             let error = ResponseError.network(response: response)
