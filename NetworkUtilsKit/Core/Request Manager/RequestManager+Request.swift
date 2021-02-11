@@ -25,6 +25,7 @@ extension RequestManager {
         authentification: AuthentificationProtocol? = nil,
         queue: DispatchQueue = DispatchQueue.main,
         description: String? = nil,
+        cachePolicy: URLRequest.CachePolicy,
         completion: ((Result<NetworkResponse, Error>) -> Void)? = nil,
         progressBlock: ((Double) -> Void)? = nil) {
         
@@ -39,7 +40,8 @@ extension RequestManager {
                                                                 fileList: fileList,
                                                                 encoding: encoding,
                                                                 headers: headers,
-                                                                authentification: authentification)
+                                                                authentification: authentification,
+                                                                cachePolicy: cachePolicy)
                 
                 let requestId: String = description ?? request.url?.absoluteString ?? ""
                 request.timeoutInterval = self.requestTimeoutInterval ?? request.timeoutInterval
@@ -61,7 +63,7 @@ extension RequestManager {
                             completion?(.success((response.statusCode, data)))
                             return
                         } else if response.statusCode == 304 {
-                            log(NetworkLogType.error, requestId, error: error)
+                            log(NetworkLogType.success, requestId, error: error)
                             let error = ResponseError.network(response: response)
                             completion?(.failure(error))
                             return
@@ -114,6 +116,7 @@ extension RequestManager {
                      authentification: request.authentification,
                      queue: request.queue,
                      description: request.description,
+                     cachePolicy: request.cachePolicy,
                      completion: result,
                      progressBlock: progressBlock)
     }

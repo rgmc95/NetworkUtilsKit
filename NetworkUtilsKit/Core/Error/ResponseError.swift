@@ -40,4 +40,26 @@ public enum ResponseError: Error, LocalizedError {
             return "No mock file found"
         }
     }
+
+    public var code: Int {
+        switch self {
+        case .unknow:
+            return -1
+
+        case .decodable (let type, let message):
+            return -2
+
+        case .data:
+            return -3
+
+        case .json:
+            return -4
+
+        case .network(let response):
+            return response?.statusCode ?? -5 
+
+        case .noMock:
+            return -6
+        }
+    }
 }

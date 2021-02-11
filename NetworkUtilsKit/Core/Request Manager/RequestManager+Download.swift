@@ -108,6 +108,7 @@ extension RequestManager {
                               authentification: AuthentificationProtocol? = nil,
                               identifier: String? = nil,
                               forceDownload: Bool? = false,
+                              cachePolicy: URLRequest.CachePolicy,
                               completion: ((Result<Int, Error>) -> Void)? = nil,
                               progress: ((Float) -> Void)? = nil) {
 
@@ -121,7 +122,8 @@ extension RequestManager {
                                             parameters: parameters,
                                             encoding: encoding,
                                             headers: headers,
-                                            authentification: authentification)
+                                            authentification: authentification,
+                                            cachePolicy: cachePolicy)
         } catch {
             completion?(.failure(error))
             return
@@ -195,6 +197,7 @@ extension RequestManager {
                           authentification: request.authentification,
                           identifier: request.identifier,
                           forceDownload: forceDownload,
+                          cachePolicy: request.cachePolicy,
                           completion: result,
                           progress: progress)
     }

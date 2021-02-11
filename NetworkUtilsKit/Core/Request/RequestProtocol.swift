@@ -50,6 +50,9 @@ public protocol RequestProtocol: CustomStringConvertible {
     
     /// Request identifier
     var identifier: String? { get }
+
+    /// Request cache Policy
+    var cachePolicy: NSURLRequest.CachePolicy { get }
 }
 
 extension RequestProtocol {
@@ -89,6 +92,11 @@ extension RequestProtocol {
     
     /// Request identifier
     public var identifier: String? { nil }
+
+    /** Request cache Policy. Default value is ".reloadIgnoringLocalCacheData" wich means you'll get an error if server respond "304 not modified"
+     If you rather get a 200 and cached response instead of error 304 :  you should use ".useProtocolCachePolicy" which is the default Apple policy
+     */
+    public var cachePolicy: NSURLRequest.CachePolicy { .reloadIgnoringLocalCacheData }
     
     // MARK: Response
     /**
@@ -140,8 +148,8 @@ extension RequestProtocol {
                     completion?(.failure(ResponseError.data))
                     return
                 }
-                
-                let objects = T.decode(from: data) // decode object
+
+                let objects = try? T.decode(from: data) // decode object
                 
                 if let objects: T = objects {
                     completion?(.success(objects))

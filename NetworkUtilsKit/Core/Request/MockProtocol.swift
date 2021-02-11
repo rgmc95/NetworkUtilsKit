@@ -102,7 +102,7 @@ extension RequestProtocol where Self: MockProtocol {
             case .success(let response):
                 guard let data = response.data else { completion?(.failure(ResponseError.data)); return }
                 
-                let objects = T.decode(from: data)
+                let objects = try? T.decode(from: data)
                 if let objects: T = objects {
                     completion?(.success(objects))
                 } else {

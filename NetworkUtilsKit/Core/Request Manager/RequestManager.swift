@@ -157,7 +157,8 @@ extension RequestManager {
                                fileList: [String: URL]? = nil,
                                encoding: Encoding = .url,
                                headers: Headers? = nil,
-                               authentification: AuthentificationProtocol? = nil) throws -> URLRequest {
+                               authentification: AuthentificationProtocol? = nil,
+                               cachePolicy: URLRequest.CachePolicy) throws -> URLRequest {
         // URL components
         let components = self.getUrlComponents(scheme: scheme,
                                                host: host,
@@ -171,7 +172,7 @@ extension RequestManager {
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
-        request.cachePolicy = .reloadIgnoringLocalCacheData // allow reponse 304 instead of 200.
+        request.cachePolicy = cachePolicy // .reloadIgnoringLocalCacheData allow reponse 304 instead of 200.
         // Final headers
         let finalHeaders = self.getHeaders(headers: headers, authentification: authentification)
         finalHeaders.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
