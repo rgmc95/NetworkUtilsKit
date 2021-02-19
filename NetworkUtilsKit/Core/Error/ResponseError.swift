@@ -46,7 +46,7 @@ public enum ResponseError: Error, LocalizedError {
         case .unknow:
             return -1
 
-        case .decodable (let type, let message):
+        case .decodable:
             return -2
 
         case .data:

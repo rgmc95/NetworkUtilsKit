@@ -108,7 +108,7 @@ extension RequestManager {
                               authentification: AuthentificationProtocol? = nil,
                               identifier: String? = nil,
                               forceDownload: Bool? = false,
-                              cachePolicy: URLRequest.CachePolicy,
+                              cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData,
                               completion: ((Result<Int, Error>) -> Void)? = nil,
                               progress: ((Float) -> Void)? = nil) {
 

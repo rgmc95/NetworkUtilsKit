@@ -158,7 +158,7 @@ extension RequestManager {
                                encoding: Encoding = .url,
                                headers: Headers? = nil,
                                authentification: AuthentificationProtocol? = nil,
-                               cachePolicy: URLRequest.CachePolicy) throws -> URLRequest {
+                               cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData) throws -> URLRequest {
         // URL components
         let components = self.getUrlComponents(scheme: scheme,
                                                host: host,

@@ -9,23 +9,15 @@ let package = Package(
     products: [
         .library(
             name: "NetworkUtilsKit",
-            targets: ["NetworkUtilsKit"]),
-//        .library(
-//            name: "NetworkUtilsKit/Promise",
-//            targets: ["NetworkUtilsKit/Promise"]),
+            targets: ["NetworkUtilsKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/rgmc95/UtilsKit.git", from: "2.0.0"),
-//        .package(url: "https://github.com/mxcl/PromiseKit.git", from: "6.13.0")
+        .package(url: "https://github.com/rgmc95/UtilsKit.git", from: "2.0.6")
     ],
     targets: [
         .target(
             name: "NetworkUtilsKit",
             dependencies: ["UtilsKit"],
-            path: "./NetworkUtilsKit/Core"),
-//        .target(
-//            name: "NetworkUtilsKit/Promise",
-//            dependencies: ["NetworkUtilsKit", "PromiseKit"],
-//            path: "./NetworkUtilsKit/Promise"),
+            path: "./NetworkUtilsKit/Core")
     ]
 )

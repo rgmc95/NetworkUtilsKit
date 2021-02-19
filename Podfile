@@ -5,7 +5,7 @@ platform :ios, '10.0'
 
 target 'NetworkUtilsKit' do
   
-  pod 'UtilsKit'		      , '~> 2.0'
+  pod 'UtilsKit'		  , '~> 2.0.6'
   pod 'PromiseKit'	      , '~> 6.13'
   
 end

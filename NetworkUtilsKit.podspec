@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '10.0'
 
   s.subspec 'Core' do |core|
-    core.dependency 'UtilsKit', '~> 2.0'
+    core.dependency 'UtilsKit', '~> 2.0.6'
     core.source_files = 'NetworkUtilsKit/Core/**/*.{h,m,swift}'
   end
 

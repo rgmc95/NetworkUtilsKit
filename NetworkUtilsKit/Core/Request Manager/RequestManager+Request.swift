@@ -25,7 +25,7 @@ extension RequestManager {
         authentification: AuthentificationProtocol? = nil,
         queue: DispatchQueue = DispatchQueue.main,
         description: String? = nil,
-        cachePolicy: URLRequest.CachePolicy,
+        cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData,
         completion: ((Result<NetworkResponse, Error>) -> Void)? = nil,
         progressBlock: ((Double) -> Void)? = nil) {
         
@@ -57,7 +57,6 @@ extension RequestManager {
                         }
 
                         if response.statusCode >= 200 && response.statusCode < 300 {
-                            let isFromCache = false
                             log(NetworkLogType.success, requestId)
                             completion?(.success((response.statusCode, data)))
                             return
