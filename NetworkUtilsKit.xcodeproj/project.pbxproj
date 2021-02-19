@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1ED333280EA7023E32472BA1 /* Pods_NetworkUtilsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A567DA9326055E4A0A93C9FA /* Pods_NetworkUtilsKit.framework */; };
+		270EE50025E00AEC00ADD5AB /* MockProtocol+Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270EE4FF25E00AEC00ADD5AB /* MockProtocol+Promise.swift */; };
 		279F92D424B8B33E00349413 /* NetworkKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 279F92D224B8B33E00349413 /* NetworkKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		279F92EA24B8B36E00349413 /* RequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92DB24B8B36E00349413 /* RequestManager.swift */; };
 		279F92EB24B8B36E00349413 /* RequestManager+Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92DC24B8B36E00349413 /* RequestManager+Download.swift */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		270EE4FF25E00AEC00ADD5AB /* MockProtocol+Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MockProtocol+Promise.swift"; sourceTree = "<group>"; };
 		279F92CF24B8B33E00349413 /* NetworkUtilsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NetworkUtilsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		279F92D224B8B33E00349413 /* NetworkKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkKit.h; sourceTree = "<group>"; };
 		279F92D324B8B33E00349413 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -64,6 +66,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		270EE4FE25E00ADE00ADD5AB /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				270EE4FF25E00AEC00ADD5AB /* MockProtocol+Promise.swift */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
 		279F92C524B8B33E00349413 = {
 			isa = PBXGroup;
 			children = (
@@ -185,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				EE52C5DD24C08926005D5951 /* Request */,
+				270EE4FE25E00ADE00ADD5AB /* Mock */,
 			);
 			path = Promise;
 			sourceTree = "<group>";
@@ -332,6 +343,7 @@
 				27F5854925B9CCA400F50017 /* MockProtocol.swift in Sources */,
 				27F5853425B9C34000F50017 /* NetworkLogType.swift in Sources */,
 				279F92EC24B8B36E00349413 /* RequestManager+Request.swift in Sources */,
+				270EE50025E00AEC00ADD5AB /* MockProtocol+Promise.swift in Sources */,
 				279F92EE24B8B36E00349413 /* RequestMethod.swift in Sources */,
 				279F92EB24B8B36E00349413 /* RequestManager+Download.swift in Sources */,
 				279F92F024B8B36E00349413 /* RequestProtocol.swift in Sources */,

@@ -47,7 +47,6 @@ extension RequestManager {
                 request.timeoutInterval = self.requestTimeoutInterval ?? request.timeoutInterval
                 
                 log(NetworkLogType.sending, requestId)
-                //log(NetworkLogType.sending, String(data: data ?? Data(), encoding: .utf8))
 
                 let task = URLSession(configuration: self.requestConfiguration).dataTask(with: request) { data, response, error in
                     queue.async {

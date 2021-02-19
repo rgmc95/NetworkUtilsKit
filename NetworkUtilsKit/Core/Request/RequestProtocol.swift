@@ -121,9 +121,7 @@ extension RequestProtocol {
                                                 completion?(result)
                                             }
                                         }
-                                      }, progressBlock: { progress in
-                                        progressBlock?(progress)
-                                      })
+                                      }, progressBlock: progressBlock)
     }
     
     /**
@@ -139,7 +137,7 @@ extension RequestProtocol {
     public func response<T: Decodable>(_ type: T.Type,
                                        completion: ((Result<T, Error>) -> Void)? = nil,
                                        progressBlock: ((Double) -> Void)? = nil ) {
-        self.response { result in
+        self.response(completion: { result in
             switch result {
             case .success(let response):
                 guard
@@ -162,9 +160,7 @@ extension RequestProtocol {
             case .failure(let error):
                 completion?(.failure(error))
             }
-        } progressBlock: { progress in
-            progressBlock?(progress)
-        }
+        }, progressBlock: progressBlock)
     }
     
     /**
