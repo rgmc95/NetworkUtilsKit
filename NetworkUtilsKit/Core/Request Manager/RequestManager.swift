@@ -57,23 +57,12 @@ extension RequestManager {
                                   encoding: Encoding = .url,
                                   authentification: AuthentificationProtocol? = nil) -> URLComponents {
         var components = URLComponents()
-        var finalUrlParameters: [URLQueryItem] = []
+        var finalUrlParameters: [URLQueryItem] = authentification?.urlQueryItems ?? []
         
         components.scheme = scheme
         components.host = host
         components.path = path
         components.port = port
-        
-        // Authentification
-        authentification?.parameters.forEach {
-            switch authentification?.encoding {
-            case .url:
-                finalUrlParameters.append(URLQueryItem(name: $0.key, value: $0.value))
-            case .body: break
-            case .header: break
-            case .none: break
-            }
-        }
         
         // Parameters
         switch encoding {
@@ -90,23 +79,12 @@ extension RequestManager {
         
         return components
     }
-
+    
     private func getJSONBodyData(parameters: Parameters?,
                                  authentification: AuthentificationProtocol?) -> Data? {
         
-        var finalBodyParameters: Parameters = [:]
+        var finalBodyParameters: Parameters = authentification?.bodyParameters ?? [:]
         
-        // Authentification
-        authentification?.parameters.forEach {
-            switch authentification?.encoding {
-            case .body:
-                finalBodyParameters[$0.key] = $0.value
-            case .header: break
-            case .url: break
-            case .none: break
-            }
-        }
-
         // Parameters
         parameters?.forEach {
             finalBodyParameters[$0.key] = $0.value
@@ -131,18 +109,11 @@ extension RequestManager {
     
     private func getHeaders(headers: Headers?,
                             authentification: AuthentificationProtocol?) -> Headers {
-        var finalHeaders: Headers = headers ?? [:]
+        var finalHeaders: Headers = authentification?.headers ?? [:]
         
-        // Authentification
-        if let authentification: AuthentificationProtocol = authentification {
-            authentification.parameters.forEach {
-                switch authentification.encoding {
-                case .header:
-                    finalHeaders[$0.key] = $0.value
-                case .body: break
-                case .url: break
-                }
-            }
+        // Headers
+        headers?.forEach {
+            finalHeaders[$0.key] = $0.value
         }
         
         return finalHeaders
@@ -181,7 +152,8 @@ extension RequestManager {
         switch encoding {
         case .json:
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = self.getJSONBodyData(parameters: parameters, authentification: authentification)
+            request.httpBody = self.getJSONBodyData(parameters: parameters,
+                                                    authentification: authentification)
             
         case .formData:
             request.buildFormDataBody { formData in

@@ -9,28 +9,49 @@
 import Foundation
 
 /**
- Authentification encoding
- */
-public enum AuthentificationEncoding {
-    
-    /// Encode parameters in request header
-    case header
-    
-    /// Encode parameters in body
-    case body
-    
-    /// Encode parameters in URL
-    case url
-}
-
-/**
- This protocol is used to authenticate a request with the chosen encoding and parameters
+ This protocol is used to authenticate a request with the chosen headers, body parameters or/and url query parameters
  */
 public protocol AuthentificationProtocol {
     
-    /// The parameters to encode
-    var parameters: [String: String] { get }
+    /// Auth headeres
+    var headers: Headers { get }
     
-    /// The type of the encoding
-    var encoding: AuthentificationEncoding { get }
+    /// Auth params
+    var bodyParameters: Parameters { get }
+    
+    /// Auth query params
+    var urlQueryItems: [URLQueryItem] { get }
+}
+
+extension AuthentificationProtocol {
+    
+    /// Auth headeres
+    public var headers: Headers { [:] }
+    
+    /// Auth params
+    public var bodyParameters: Parameters { [:] }
+    
+    /// Auth query params
+    public var urlQueryItems: [URLQueryItem] { [] }
+}
+
+extension Array: AuthentificationProtocol where Element == AuthentificationProtocol {
+    
+    public var headers: Headers {
+        self.reduce(into: [:]) { headers, new in
+            let value: Headers = new.headers
+            _ = headers.merging(value) { current, _ in current }
+        }
+    }
+    
+    public var bodyParameters: Parameters {
+        self.reduce(into: [:]) { params, new in
+            let value: Parameters = new.bodyParameters
+            _ = params.merging(value) { current, _ in current }
+        }
+    }
+    
+    public var urlQueryItems: [URLQueryItem] {
+        self.flatMap { $0.urlQueryItems }
+    }
 }
