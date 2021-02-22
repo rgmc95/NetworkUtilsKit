@@ -16,7 +16,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
     let identifier: String?
     let completion: ((Result<Int, Error>) -> Void)?
     let progress: ((Float) -> Void)?
-
+    
     init(destination: URL, identifier: String?, completion: ((Result<Int, Error>) -> Void)?, progress: ((Float) -> Void)?) {
         self.destination = destination
         self.identifier = identifier
@@ -31,27 +31,26 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
             }
         }
     }
-
+    
     // MARK: URLSessionDownloadDelegate
     func urlSession(_ session: URLSession,
                     downloadTask: URLSessionDownloadTask,
                     didFinishDownloadingTo location: URL) {
         
         guard let response = downloadTask.response as? HTTPURLResponse else {
-
-                self.completion?(.failure(ResponseError.unknow))
-
+            
+            self.completion?(.failure(downloadTask.error ?? ResponseError.unknow))
+            
             return
         }
         
         if response.statusCode >= 200 && response.statusCode < 300 {
             
             log(NetworkLogType.download, identifier)
-
-
+            
             do {
                 try FileManager.default.moveItem(at: location, to: destination)
-                    self.completion?(.success(response.statusCode))
+                self.completion?(.success(response.statusCode))
             } catch {
                 self.completion?(.failure(error))
             }
@@ -59,9 +58,9 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
         } else {
             let error = ResponseError.network(response: response)
             log(NetworkLogType.error, identifier, error: error)
-
-                self.completion?(.failure(error))
-
+            
+            self.completion?(.failure(error))
+            
             return
         }
     }
@@ -69,16 +68,16 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if error == nil { return }
         guard let response = task.response as? HTTPURLResponse else {
-            self.completion?(.failure(ResponseError.unknow))
+            self.completion?(.failure(task.error ?? ResponseError.unknow))
             return
         }
         
         let requestError = ResponseError.network(response: response)
         
         log(NetworkLogType.error, identifier, error: requestError)
-
-            self.completion?(.failure(requestError))
-
+        
+        self.completion?(.failure(requestError))
+        
         return
     }
     
@@ -87,9 +86,9 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
                     didWriteData bytesWritten: Int64,
                     totalBytesWritten: Int64,
                     totalBytesExpectedToWrite: Int64) {
-
-            let progressValue = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
-            self.progress?(progressValue)
+        
+        let progressValue = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+        self.progress?(progressValue)
     }
 }
 
@@ -111,7 +110,7 @@ extension RequestManager {
                               cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData,
                               completion: ((Result<Int, Error>) -> Void)? = nil,
                               progress: ((Float) -> Void)? = nil) {
-
+        
         var request: URLRequest
         do {
             request = try self.buildRequest(scheme: scheme,
@@ -128,7 +127,7 @@ extension RequestManager {
             completion?(.failure(error))
             return
         }
-
+        
         self.downloadFileWithRequest(request: request,
                                      destinationURL: destinationURL,
                                      identifier: identifier,
@@ -136,17 +135,17 @@ extension RequestManager {
                                      completion: completion,
                                      progress: progress)
     }
-
+    
     private func downloadFileWithRequest(request: URLRequest,
                                          destinationURL: URL,
                                          identifier: String? = nil,
                                          forceDownload: Bool? = false,
                                          completion: ((Result<Int, Error>) -> Void)? = nil,
                                          progress: ((Float) -> Void)? = nil) {
-
+        
         var request: URLRequest = request // mutable request
         let requestId: String = identifier ?? request.url?.absoluteString ?? ""
-
+        
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             if forceDownload == true {
                 //Remove file before download it again
@@ -157,20 +156,20 @@ extension RequestManager {
                 return
             }
         }
-
+        
         let delegate = NetworkDownloadManagement(destination: destinationURL, identifier: requestId, completion: completion, progress: progress)
-
+        
         // downloadConfiguration is default (delegate Queue is Background by default)
         let session = URLSession(configuration: self.downloadConfiguration, delegate: delegate, delegateQueue: nil)
         if let timeoutInterval = self.downloadTimeoutInterval {
             request.timeoutInterval = timeoutInterval
         }
-
+        
         log(NetworkLogType.download, requestId)
         
         session.downloadTask(with: request).resume()
     }
-
+    
     /**
      Download url with request and gives the progress
      - parameter destinationURL : URL where the file will be copied
@@ -184,7 +183,7 @@ extension RequestManager {
                          forceDownload: Bool? = false,
                          result: ((Result<Int, Error>) -> Void)? = nil,
                          progress: ((Float) -> Void)? = nil) {
-
+        
         self.downloadFile(destinationURL: destinationURL,
                           scheme: request.scheme,
                           host: request.host,
@@ -201,7 +200,7 @@ extension RequestManager {
                           completion: result,
                           progress: progress)
     }
-
+    
     /**
      Download url with request and gives the progress
      - parameter sourceURL : URL of the file to download
@@ -215,7 +214,7 @@ extension RequestManager {
                          forceDownload: Bool? = false,
                          result: ((Result<Int, Error>) -> Void)? = nil,
                          progress: ((Float) -> Void)? = nil) {
-
+        
         self.downloadFileWithRequest(request: URLRequest(url: sourceURL),
                                      destinationURL: destinationURL,
                                      forceDownload: forceDownload,
