@@ -6,6 +6,7 @@
 //
 
 import PromiseKit
+import Foundation
 
 extension MockProtocol {
     

@@ -7,6 +7,7 @@
 //
 
 import UtilsKit
+import Foundation
 
 // MARK: - Error
 public enum ResponseError: Error, LocalizedError {
