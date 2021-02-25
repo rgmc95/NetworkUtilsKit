@@ -40,14 +40,14 @@ extension Array: AuthentificationProtocol where Element == AuthentificationProto
     public var headers: Headers {
         self.reduce(into: [:]) { headers, new in
             let value: Headers = new.headers
-            _ = headers.merging(value) { current, _ in current }
+			headers = headers.merging(value) { current, _ in current }
         }
     }
     
     public var bodyParameters: Parameters {
         self.reduce(into: [:]) { params, new in
             let value: Parameters = new.bodyParameters
-            _ = params.merging(value) { current, _ in current }
+			params = params.merging(value) { current, _ in current }
         }
     }
     
