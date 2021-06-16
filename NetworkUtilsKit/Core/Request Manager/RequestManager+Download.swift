@@ -157,7 +157,10 @@ extension RequestManager {
             }
         }
         
-        let delegate = NetworkDownloadManagement(destination: destinationURL, identifier: requestId, completion: completion, progress: progress)
+        let delegate = NetworkDownloadManagement(destination: destinationURL,
+												 identifier: requestId,
+												 completion: completion,
+												 progress: progress)
         
         // downloadConfiguration is default (delegate Queue is Background by default)
         let session = URLSession(configuration: self.downloadConfiguration, delegate: delegate, delegateQueue: nil)

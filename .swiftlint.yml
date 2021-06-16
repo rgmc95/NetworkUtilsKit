@@ -1,4 +1,4 @@
-whitelist_rules:
+only_rules:
 - anyobject_protocol
 - array_init
 - attributes
@@ -19,7 +19,6 @@ whitelist_rules:
 - control_statement
 - cyclomatic_complexity
 - deployment_target
-- discarded_notification_center_observer
 - discouraged_direct_init
 - duplicate_imports
 - empty_collection_literal
@@ -33,11 +32,9 @@ whitelist_rules:
 - expiring_todo
 - explicit_init
 - explicit_self
-- explicit_type_interface
 - fallthrough
 - fatal_error_message
 - file_length
-- file_name
 - file_name_no_space
 - file_types_order
 - first_where
@@ -54,7 +51,6 @@ whitelist_rules:
 - identifier_name
 - implicit_getter
 - implicit_return
-- implicitly_unwrapped_optional
 - inert_defer
 - is_disjoint
 - joined_default_parameter
@@ -67,7 +63,6 @@ whitelist_rules:
 - legacy_multiple
 - legacy_nsgeometry_functions
 - legacy_random
-- let_var_whitespace
 - line_length
 - literal_expression_end_indentation
 - lower_acl_than_parent
@@ -79,7 +74,6 @@ whitelist_rules:
 - multiline_parameters
 - multiple_closures_with_trailing_closure
 - nesting
-- nimble_operator
 - no_space_in_method_call
 - nsobject_prefer_isequal
 - number_separator
@@ -105,6 +99,7 @@ whitelist_rules:
 - redundant_optional_initialization
 - redundant_set_access_control
 - redundant_string_enum_value
+- redundant_type_annotation
 - redundant_void_return
 - return_arrow_whitespace
 - shorthand_operator
@@ -133,21 +128,15 @@ whitelist_rules:
 - unused_import
 - unused_setter_value
 - valid_ibinspectable
-- vertical_parameter_alignment
-- vertical_parameter_alignment_on_call
 - vertical_whitespace_between_cases
 - vertical_whitespace_closing_braces
 - void_return
 - weak_delegate
 - xctfail_message
 - yoda_condition
-- explicit_acl
-- explicit_top_level_acl
-- missing_docs
 
 excluded:
-- Pods/
-- Package.swift
+    - Package.swift
 
 anyobject_protocol:
     severity: error
@@ -157,12 +146,6 @@ array_init:
 
 attributes:
     severity: warning
-    always_on_line_above: 
-        - "@available"
-    always_on_same_line: 
-        - "@IBDesignable"
-        - "@objc"
-        - "@discardableResult"
 
 class_delegate_protocol:
     severity: error
@@ -171,7 +154,7 @@ closing_brace:
     severity: warning
 
 closure_body_length:
-    warning: 50
+    warning: 35
     error: 100
 
 closure_end_indentation:
@@ -213,13 +196,10 @@ control_statement:
 cyclomatic_complexity:
     warning: 10
     error: 20
-    ignores_case_statements: false
+    ignores_case_statements: true
 
 deployment_target:
     severity: error
-
-discarded_notification_center_observer:
-    severity: warning
 
 discouraged_direct_init:
     severity: error
@@ -250,7 +230,7 @@ empty_xctest_method:
 
 enum_case_associated_values_count:
     warning: 4
-    errorr: 6
+    error: 6
 
 expiring_todo:
     warning: approaching_expiry_severity
@@ -261,11 +241,6 @@ explicit_init:
 
 explicit_self:
     severity: error
-
-explicit_type_interface:
-    severity: warning
-    excluded: [String]
-    allow_redundancy: true
 
 fallthrough:
     severity: error
@@ -278,19 +253,11 @@ file_length:
     error: 10000
     ignore_comment_only_lines: true
 
-file_name:
-    severity: warning
-
 file_name_no_space:
     severity: error
 
 file_types_order:
     severity: warning
-    order:
-        - supporting_type
-        - main_type
-        - extension
-        - preview_provider
 
 first_where:
     severity: error
@@ -332,9 +299,11 @@ identifier_name:
     min_length:
         warning: 3
         error: 2
-    max_length: 
+    max_length:
         warning: 40
         error: 60
+    allowed_symbols: 
+        - "_"
     excluded:
         - id
         - ids
@@ -347,9 +316,6 @@ implicit_getter:
 implicit_return:
     severity: warning
 
-implicitly_unwrapped_optional:
-    severity: error
-
 inert_defer:
     severity: error
 
@@ -357,7 +323,7 @@ is_disjoint:
     severity: error
 
 joined_default_parameter:
-    severity: warning
+    severity: error
 
 large_tuple:
     warning: 3
@@ -387,15 +353,12 @@ legacy_nsgeometry_functions:
 legacy_random:
     severity: error
 
-let_var_whitespace:
-    severity: warning
-
 line_length:
-    warning: 150
+    warning: 130
     error: 200
     ignores_urls: true
     ignores_function_declarations: false
-    ignores_comments: true 
+    ignores_comments: true
     ignores_interpolated_strings: true
 
 literal_expression_end_indentation:
@@ -405,9 +368,6 @@ lower_acl_than_parent:
     severity: error
 
 mark:
-    severity: warning
-
-modifier_order:
     severity: warning
 
 multiline_arguments:
@@ -428,11 +388,8 @@ multiple_closures_with_trailing_closure:
 nesting:
     type_level:
         warning: 3
-    statement_level:
+    function_level:
         warning: 5
-
-nimble_operator:
-    severity: warning
 
 no_space_in_method_call:
     severity: warning
@@ -459,7 +416,7 @@ operator_whitespace:
 optional_enum_case_matching:
     severity: warning
 
-orphaned_doc_comment: 
+orphaned_doc_comment:
     severity: warning
 
 overridden_super_call:
@@ -508,6 +465,9 @@ redundant_set_access_control:
     severity: warning
 
 redundant_string_enum_value:
+    severity: error
+
+redundant_type_annotation:
     severity: warning
 
 redundant_void_return:
@@ -559,23 +519,23 @@ type_contents_order:
         - type_alias
         - associated_type
         - subtype
-        - type_property
         - ib_outlet
         - ib_inspectable
-        - instance_property
+        - type_property
         - type_method
+        - instance_property
         - initializer
         - deinitializer
-        - subscript
         - view_life_cycle_method
         - other_method
         - ib_action
+        - subscript
 
 type_name:
     min_length:
         warning: 2
         error: 1
-    max_length: 
+    max_length:
         warning: 40
         error: 60
 
@@ -615,17 +575,11 @@ unused_setter_value:
 valid_ibinspectable:
     severity: warning
 
-vertical_parameter_alignment:
-    severity: warning
-
-vertical_parameter_alignment_on_call:
-    severity: warning
-
 vertical_whitespace_between_cases:
-    severity: warning
+   severity: warning
 
 vertical_whitespace_closing_braces:
-    severity: warning
+   severity: warning
 
 void_return:
     severity: warning
@@ -637,15 +591,6 @@ xctfail_message:
     severity: warning
 
 yoda_condition:
-    severity: warning
-
-explicit_acl:
-    severity: warning
-
-explicit_top_level_acl:
-    severity: warning
-
-missing_docs:
     severity: warning
 
 reporter: "xcode"

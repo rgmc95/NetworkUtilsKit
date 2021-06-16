@@ -116,7 +116,8 @@ extension RequestProtocol {
                                             
                                         case .failure(let error):
                                             if let cacheKey = self.cacheKey, let data = NetworkCache.shared.get(cacheKey) {
-                                                completion?(.success((statusCode: (error as? RequestError)?.statusCode, data: data)))
+                                                completion?(.success((statusCode: (error as? RequestError)?.statusCode,
+																	  data: data)))
                                             } else {
                                                 completion?(result)
                                             }

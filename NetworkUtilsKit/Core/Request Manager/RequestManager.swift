@@ -11,7 +11,11 @@ import UtilsKit
 /// Request headers
 public typealias Headers = [String: String]
 
-/// Request parameters
+/** Request parameters
+
+	- Warning:
+	Override AutentificationProtocol parameters if exists
+*/
 public typealias Parameters = [String: Any]
 
 /// Network reponse: staus code and data
@@ -57,7 +61,7 @@ extension RequestManager {
                                   encoding: Encoding = .url,
                                   authentification: AuthentificationProtocol? = nil) -> URLComponents {
         var components = URLComponents()
-        var finalUrlParameters: [URLQueryItem] = authentification?.urlQueryItems ?? []
+        var finalUrlParameters: [URLQueryItem] = []
         
         components.scheme = scheme
         components.host = host
@@ -70,8 +74,18 @@ extension RequestManager {
             parameters?.forEach({
                 finalUrlParameters.append(URLQueryItem(name: $0.key, value: "\($0.value)"))
             })
-        default: break
+			
+        default:
+			break
         }
+		
+		// Authen Params
+		authentification?.urlQueryItems.forEach { query in
+			if !finalUrlParameters.contains(where: { $0.name == query.name }) {
+				finalUrlParameters.append(query)
+			}
+		}
+		
         
         if !finalUrlParameters.isEmpty {
             components.queryItems = finalUrlParameters
@@ -144,6 +158,7 @@ extension RequestManager {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.cachePolicy = cachePolicy // .reloadIgnoringLocalCacheData allow reponse 304 instead of 200.
+		
         // Final headers
         let finalHeaders = self.getHeaders(headers: headers, authentification: authentification)
         finalHeaders.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
