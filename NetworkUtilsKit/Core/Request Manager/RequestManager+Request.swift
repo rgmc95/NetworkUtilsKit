@@ -182,6 +182,7 @@ extension RequestManager {
 					 authentification: request.authentification,
 					 queue: request.queue,
 					 description: request.description,
+					 retryAuthentification: request.canRefreshToken,
 					 cachePolicy: request.cachePolicy,
 					 completion: result,
 					 progressBlock: progressBlock)

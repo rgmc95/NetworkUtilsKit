@@ -53,6 +53,9 @@ public protocol RequestProtocol: CustomStringConvertible {
 
     /// Request cache Policy
     var cachePolicy: NSURLRequest.CachePolicy { get }
+	
+	/// Token refreachable
+	var canRefreshToken: Bool { get }
 }
 
 extension RequestProtocol {
@@ -97,6 +100,9 @@ extension RequestProtocol {
      If you rather get a 200 and cached response instead of error 304 :  you should use ".useProtocolCachePolicy" which is the default Apple policy
      */
     public var cachePolicy: NSURLRequest.CachePolicy { .reloadIgnoringLocalCacheData }
+	
+	/// Token refreachable
+	public var canRefreshToken: Bool { true }
     
     // MARK: Response
     /**
