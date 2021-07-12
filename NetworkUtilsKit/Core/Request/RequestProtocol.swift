@@ -64,6 +64,20 @@ extension RequestProtocol {
     public var description: String {
         "\(self.method.rawValue) - \(self.identifier ?? "\("\(self.scheme)://\(self.host)\(self.path)")")"
     }
+	
+	public var request: URLRequest? {
+		try? RequestManager.shared.buildRequest(scheme: self.scheme,
+										   host: self.host,
+										   path: self.path,
+										   port: self.port,
+										   method: self.method,
+										   parameters: self.parameters,
+										   fileList: self.fileList,
+										   encoding: self.encoding,
+										   headers: self.headers,
+										   authentification: self.authentification,
+										   cachePolicy: self.cachePolicy)
+	}
 }
 
 /// default values
