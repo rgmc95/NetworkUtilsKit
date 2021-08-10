@@ -43,7 +43,7 @@ public protocol RequestProtocol: CustomStringConvertible {
     var authentification: AuthentificationProtocol? { get }
     
     /// Cache key if needed
-    var cacheKey: String? { get }
+    var cacheKey: CacheKey? { get }
     
     /// Request queue
     var queue: DispatchQueue { get }
@@ -102,7 +102,7 @@ extension RequestProtocol {
     public var authentification: AuthentificationProtocol? { nil }
     
     /// Cache key if needed
-    public var cacheKey: String? { nil }
+    public var cacheKey: CacheKey? { nil }
     
     /// Request queue. Main by default
     public var queue: DispatchQueue { DispatchQueue.main }
@@ -119,31 +119,56 @@ extension RequestProtocol {
 	public var canRefreshToken: Bool { true }
     
     // MARK: Response
-    /**
-     Send request and return response or error, with progress value
-     */
-    public func response(completion: ((Result<NetworkResponse, Error>) -> Void)? = nil,
-                         progressBlock: ((Double) -> Void)? = nil ) {
-        
-        RequestManager.shared.request(self,
-                                      result: { result in
-                                        switch result {
-                                        case .success(let response):
-                                            if let cacheKey = self.cacheKey {
-                                                NetworkCache.shared.set(response.data, for: cacheKey)
-                                            }
-                                            completion?(result)
-                                            
-                                        case .failure(let error):
-                                            if let cacheKey = self.cacheKey, let data = NetworkCache.shared.get(cacheKey) {
-                                                completion?(.success((statusCode: (error as? RequestError)?.statusCode,
+	/**
+	Send request and return response or error, with progress value
+	*/
+	public func response(completion: ((Result<NetworkResponse, Error>) -> Void)? = nil,
+						 progressBlock: ((Double) -> Void)? = nil ) {
+		
+		if let cacheKey = self.cacheKey {
+			
+			switch self.cachePolicy {
+			case .returnCacheDataElseLoad:
+				if let data = NetworkCache.shared.get(cacheKey) {
+					log(NetworkLogType.cache, cacheKey.key)
+					completion?(.success((statusCode: 200, data: data)))
+					return
+				}
+				
+			case .returnCacheDataDontLoad:
+				if let data = NetworkCache.shared.get(cacheKey) {
+					log(NetworkLogType.cache, cacheKey.key)
+					completion?(.success((statusCode: 200, data: data)))
+				} else {
+					log(NetworkLogType.cache, cacheKey.key, error: RequestError.emptyCache)
+					completion?(.failure(RequestError.emptyCache))
+				}
+				return
+				
+			default:
+				break
+			}
+		}
+		
+		RequestManager.shared.request(self,
+									  result: { result in
+										switch result {
+										case .success(let response):
+											if let cacheKey = self.cacheKey {
+												NetworkCache.shared.set(response.data, for: cacheKey)
+											}
+											completion?(result)
+											
+										case .failure(let error):
+											if let cacheKey = self.cacheKey, let data = NetworkCache.shared.get(cacheKey) {
+												completion?(.success((statusCode: (error as? RequestError)?.statusCode,
 																	  data: data)))
-                                            } else {
-                                                completion?(result)
-                                            }
-                                        }
-                                      }, progressBlock: progressBlock)
-    }
+											} else {
+												completion?(result)
+											}
+										}
+									  }, progressBlock: progressBlock)
+	}
     
     /**
      Send request and return response or error
@@ -168,15 +193,13 @@ extension RequestProtocol {
                     return
                 }
 
-                let objects = try? T.decode(from: data) // decode object
-                
-                if let objects: T = objects {
-                    completion?(.success(objects))
-                } else {
-                    let responseError = ResponseError.decodable(type: "\(T.self)")
-                    log(NetworkLogType.error, responseError.errorDescription, error: nil)
-                    completion?(.failure(responseError))
-                }
+				do {
+					let objects = try T.decode(from: data)
+					completion?(.success(objects))
+				} catch {
+					log(NetworkLogType.error, error.localizedDescription, error: nil)
+					completion?(.failure(error))
+				}
                 
             case .failure(let error):
                 completion?(.failure(error))

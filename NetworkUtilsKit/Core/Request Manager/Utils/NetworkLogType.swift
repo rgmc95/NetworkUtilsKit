@@ -15,6 +15,7 @@ internal enum NetworkLogType: LogType {
     case sending
     case success
     case error
+	case cache
     
     case download
     case mock
@@ -23,6 +24,7 @@ internal enum NetworkLogType: LogType {
         switch self {
         case .sending: return "➡️"
         case .success: return "✅"
+		case .cache: return "✅ 🗄"
         case .error: return "❌"
         case .download: return "📲"
         case .mock: return "🍾"
