@@ -536,7 +536,7 @@
 			repositoryURL = "https://github.com/rgmc95/UtilsKit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.7;
+				minimumVersion = 2.3.0;
 			};
 		};
 		4CBA87FE25E52E3C00D60B74 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
