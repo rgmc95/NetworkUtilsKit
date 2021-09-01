@@ -38,4 +38,18 @@ extension RequestProtocol {
             }
         }
     }
+	
+	/**
+	Send request
+	*/
+	public func send() -> Promise<Void> {
+		Promise { resolver in
+			self.send { results in
+				switch results {
+				case .success: resolver.fulfill(())
+				case .failure(let error): resolver.reject(error)
+				}
+			} progressBlock: { _ in }
+		}
+	}
 }
