@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'NetworkUtilsKit'
-  s.version = '1.5.1'
+  s.version = '1.5.2'
   s.license = {
     :type => 'Copyright',
     :text => <<-LICENSE
@@ -11,13 +11,13 @@ Pod::Spec.new do |s|
   s.author = "Romain Gjura & Michael Coqueret & David Douard"
   s.summary = "Swift Network Utilities"
   s.swift_version = '5.1'
-  s.source =  { :git => "https://github.com/rgmc95/NetworkUtilsKit.git", :tag => "1.5.1" }
+  s.source =  { :git => "https://github.com/rgmc95/NetworkUtilsKit.git", :tag => "1.5.2" }
   s.default_subspec = 'Core'
 
   s.ios.deployment_target = '10.0'
 
   s.subspec 'Core' do |core|
-    core.dependency 'UtilsKit', '~> 2.3.1'
+    core.dependency 'UtilsKit', '~> 2.4'
     core.source_files = 'NetworkUtilsKit/Core/**/*.{h,m,swift}'
   end
 
