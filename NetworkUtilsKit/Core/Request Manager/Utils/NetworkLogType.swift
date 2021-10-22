@@ -12,22 +12,22 @@ import UtilsKit
  Network Log type.
  */
 internal enum NetworkLogType: LogType {
-    case sending
-    case success
-    case error
+	case sending
+	case success
+	case error
 	case cache
-    
-    case download
-    case mock
-    
-    internal var prefix: String {
-        switch self {
-        case .sending: return "➡️"
-        case .success: return "✅"
+	
+	case download
+	case mock
+	
+	internal var prefix: String {
+		switch self {
+		case .sending: return "➡️"
+		case .success: return "✅"
 		case .cache: return "✅ 🗄"
-        case .error: return "❌"
-        case .download: return "📲"
-        case .mock: return "🍾"
-        }
-    }
+		case .error: return "❌"
+		case .download: return "📲"
+		case .mock: return "🍾"
+		}
+	}
 }

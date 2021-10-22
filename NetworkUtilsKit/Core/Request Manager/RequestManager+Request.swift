@@ -145,7 +145,6 @@ extension RequestManager {
 				if #available(iOS 11.0, *), let progressBlock: ((Double) -> Void) = progressBlock {
 					// Don't forget to invalidate the observation when you don't need it anymore.
 					self.observation = task.progress.observe(\.fractionCompleted) { progress, _ in
-						log(NetworkLogType.sending, "Progress : \(progress.fractionCompleted)", error: nil)
 						DispatchQueue.main.async {
 							progressBlock(progress.fractionCompleted)
 						}
