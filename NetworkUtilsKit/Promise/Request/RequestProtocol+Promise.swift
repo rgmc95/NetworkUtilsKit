@@ -49,7 +49,8 @@ extension RequestProtocol {
 				case .success: resolver.fulfill(())
 				case .failure(let error): resolver.reject(error)
 				}
-			} progressBlock: { _ in }
+			} progressBlock: { _ in 
+			}
 		}
 	}
 }
