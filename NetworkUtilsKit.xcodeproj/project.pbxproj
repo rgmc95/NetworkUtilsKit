@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		270EE50025E00AEC00ADD5AB /* MockProtocol+Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270EE4FF25E00AEC00ADD5AB /* MockProtocol+Promise.swift */; };
+		2730623E2768F93F001571BE /* UtilsKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2730623D2768F93F001571BE /* UtilsKit */; };
 		279F92D424B8B33E00349413 /* NetworkKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 279F92D224B8B33E00349413 /* NetworkKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		279F92EA24B8B36E00349413 /* RequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92DB24B8B36E00349413 /* RequestManager.swift */; };
 		279F92EB24B8B36E00349413 /* RequestManager+Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92DC24B8B36E00349413 /* RequestManager+Download.swift */; };
@@ -18,18 +18,12 @@
 		279F92F024B8B36E00349413 /* RequestProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92E324B8B36E00349413 /* RequestProtocol.swift */; };
 		279F92F124B8B36E00349413 /* AuthentificationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92E524B8B36E00349413 /* AuthentificationProtocol.swift */; };
 		279F92F224B8B36E00349413 /* NetworkCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92E724B8B36E00349413 /* NetworkCache.swift */; };
-		279F92FE24B8B7FF00349413 /* RequestProtocol+Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279F92FD24B8B7FF00349413 /* RequestProtocol+Promise.swift */; };
 		27C460EE25B04F4700C2E4DC /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C460ED25B04F4700C2E4DC /* ResponseError.swift */; };
 		27D762DC25B884C100A9A66D /* URLRequest+FormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D762DA25B884C100A9A66D /* URLRequest+FormData.swift */; };
 		27D762DD25B884C100A9A66D /* URL+RequestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D762DB25B884C100A9A66D /* URL+RequestHelper.swift */; };
 		27F5853425B9C34000F50017 /* NetworkLogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F5853325B9C34000F50017 /* NetworkLogType.swift */; };
 		27F5854925B9CCA400F50017 /* MockProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F5854825B9CCA400F50017 /* MockProtocol.swift */; };
 		4CB32F282722E844003C62C2 /* RequestProtocol+Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB32F272722E844003C62C2 /* RequestProtocol+Response.swift */; };
-		4CB32F2A2722E883003C62C2 /* RequestProtocol+ResponseCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB32F292722E883003C62C2 /* RequestProtocol+ResponseCompletion.swift */; };
-		4CB32F2C2722E8E0003C62C2 /* RequestProtocol+ResponseAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB32F2B2722E8E0003C62C2 /* RequestProtocol+ResponseAsync.swift */; };
-		4CBA87FB25E52E0B00D60B74 /* UtilsKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4CBA87FA25E52E0B00D60B74 /* UtilsKit */; };
-		4CBA87FC25E52E0B00D60B74 /* UtilsKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 4CBA87FA25E52E0B00D60B74 /* UtilsKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		4CBA880025E52E3C00D60B74 /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4CBA87FF25E52E3C00D60B74 /* PromiseKit */; };
 		4CBD6B132679102A0013294E /* AuthentificationRefreshableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBD6B122679102A0013294E /* AuthentificationRefreshableProtocol.swift */; };
 /* End PBXBuildFile section */
 
@@ -40,7 +34,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				4CBA87FC25E52E0B00D60B74 /* UtilsKit in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -48,7 +41,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		270EE4FF25E00AEC00ADD5AB /* MockProtocol+Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MockProtocol+Promise.swift"; sourceTree = "<group>"; };
 		279F92CF24B8B33E00349413 /* NetworkUtilsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NetworkUtilsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		279F92D224B8B33E00349413 /* NetworkKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkKit.h; sourceTree = "<group>"; };
 		279F92D324B8B33E00349413 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -61,15 +53,12 @@
 		279F92E324B8B36E00349413 /* RequestProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestProtocol.swift; sourceTree = "<group>"; };
 		279F92E524B8B36E00349413 /* AuthentificationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthentificationProtocol.swift; sourceTree = "<group>"; };
 		279F92E724B8B36E00349413 /* NetworkCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkCache.swift; sourceTree = "<group>"; };
-		279F92FD24B8B7FF00349413 /* RequestProtocol+Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RequestProtocol+Promise.swift"; sourceTree = "<group>"; };
 		27C460ED25B04F4700C2E4DC /* ResponseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseError.swift; sourceTree = "<group>"; };
 		27D762DA25B884C100A9A66D /* URLRequest+FormData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+FormData.swift"; sourceTree = "<group>"; };
 		27D762DB25B884C100A9A66D /* URL+RequestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+RequestHelper.swift"; sourceTree = "<group>"; };
 		27F5853325B9C34000F50017 /* NetworkLogType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLogType.swift; sourceTree = "<group>"; };
 		27F5854825B9CCA400F50017 /* MockProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProtocol.swift; sourceTree = "<group>"; };
 		4CB32F272722E844003C62C2 /* RequestProtocol+Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RequestProtocol+Response.swift"; sourceTree = "<group>"; };
-		4CB32F292722E883003C62C2 /* RequestProtocol+ResponseCompletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RequestProtocol+ResponseCompletion.swift"; sourceTree = "<group>"; };
-		4CB32F2B2722E8E0003C62C2 /* RequestProtocol+ResponseAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RequestProtocol+ResponseAsync.swift"; sourceTree = "<group>"; };
 		4CBD6B122679102A0013294E /* AuthentificationRefreshableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationRefreshableProtocol.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -78,22 +67,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CBA87FB25E52E0B00D60B74 /* UtilsKit in Frameworks */,
-				4CBA880025E52E3C00D60B74 /* PromiseKit in Frameworks */,
+				2730623E2768F93F001571BE /* UtilsKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		270EE4FE25E00ADE00ADD5AB /* Mock */ = {
-			isa = PBXGroup;
-			children = (
-				270EE4FF25E00AEC00ADD5AB /* MockProtocol+Promise.swift */,
-			);
-			path = Mock;
-			sourceTree = "<group>";
-		};
 		279F92C524B8B33E00349413 = {
 			isa = PBXGroup;
 			children = (
@@ -114,7 +94,6 @@
 			isa = PBXGroup;
 			children = (
 				EE52C5DB24C088F8005D5951 /* Core */,
-				EE52C5DC24C088F8005D5951 /* Promise */,
 				279F92D224B8B33E00349413 /* NetworkKit.h */,
 				279F92D324B8B33E00349413 /* Info.plist */,
 			);
@@ -151,8 +130,6 @@
 				279F92E324B8B36E00349413 /* RequestProtocol.swift */,
 				27F5854825B9CCA400F50017 /* MockProtocol.swift */,
 				4CB32F272722E844003C62C2 /* RequestProtocol+Response.swift */,
-				4CB32F292722E883003C62C2 /* RequestProtocol+ResponseCompletion.swift */,
-				4CB32F2B2722E8E0003C62C2 /* RequestProtocol+ResponseAsync.swift */,
 			);
 			path = Request;
 			sourceTree = "<group>";
@@ -194,23 +171,6 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
-		EE52C5DC24C088F8005D5951 /* Promise */ = {
-			isa = PBXGroup;
-			children = (
-				EE52C5DD24C08926005D5951 /* Request */,
-				270EE4FE25E00ADE00ADD5AB /* Mock */,
-			);
-			path = Promise;
-			sourceTree = "<group>";
-		};
-		EE52C5DD24C08926005D5951 /* Request */ = {
-			isa = PBXGroup;
-			children = (
-				279F92FD24B8B7FF00349413 /* RequestProtocol+Promise.swift */,
-			);
-			path = Request;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -242,8 +202,7 @@
 			);
 			name = NetworkUtilsKit;
 			packageProductDependencies = (
-				4CBA87FA25E52E0B00D60B74 /* UtilsKit */,
-				4CBA87FF25E52E3C00D60B74 /* PromiseKit */,
+				2730623D2768F93F001571BE /* UtilsKit */,
 			);
 			productName = NetworkKit;
 			productReference = 279F92CF24B8B33E00349413 /* NetworkUtilsKit.framework */;
@@ -273,8 +232,7 @@
 			);
 			mainGroup = 279F92C524B8B33E00349413;
 			packageReferences = (
-				4CBA87F925E52E0B00D60B74 /* XCRemoteSwiftPackageReference "UtilsKit" */,
-				4CBA87FE25E52E3C00D60B74 /* XCRemoteSwiftPackageReference "PromiseKit" */,
+				2730623C2768F93F001571BE /* XCRemoteSwiftPackageReference "UtilsKit" */,
 			);
 			productRefGroup = 279F92D024B8B33E00349413 /* Products */;
 			projectDirPath = "";
@@ -323,19 +281,15 @@
 			files = (
 				279F92ED24B8B36E00349413 /* Encoding.swift in Sources */,
 				27D762DC25B884C100A9A66D /* URLRequest+FormData.swift in Sources */,
-				4CB32F2A2722E883003C62C2 /* RequestProtocol+ResponseCompletion.swift in Sources */,
 				279F92EA24B8B36E00349413 /* RequestManager.swift in Sources */,
 				4CBD6B132679102A0013294E /* AuthentificationRefreshableProtocol.swift in Sources */,
 				279F92F124B8B36E00349413 /* AuthentificationProtocol.swift in Sources */,
 				279F92F224B8B36E00349413 /* NetworkCache.swift in Sources */,
 				279F92EF24B8B36E00349413 /* RequestError.swift in Sources */,
-				279F92FE24B8B7FF00349413 /* RequestProtocol+Promise.swift in Sources */,
-				4CB32F2C2722E8E0003C62C2 /* RequestProtocol+ResponseAsync.swift in Sources */,
 				27C460EE25B04F4700C2E4DC /* ResponseError.swift in Sources */,
 				27F5854925B9CCA400F50017 /* MockProtocol.swift in Sources */,
 				27F5853425B9C34000F50017 /* NetworkLogType.swift in Sources */,
 				279F92EC24B8B36E00349413 /* RequestManager+Request.swift in Sources */,
-				270EE50025E00AEC00ADD5AB /* MockProtocol+Promise.swift in Sources */,
 				279F92EE24B8B36E00349413 /* RequestMethod.swift in Sources */,
 				4CB32F282722E844003C62C2 /* RequestProtocol+Response.swift in Sources */,
 				279F92EB24B8B36E00349413 /* RequestManager+Download.swift in Sources */,
@@ -399,7 +353,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -457,7 +411,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -479,8 +433,8 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = NetworkUtilsKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 13.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -504,8 +458,8 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = NetworkUtilsKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 13.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -543,34 +497,21 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		4CBA87F925E52E0B00D60B74 /* XCRemoteSwiftPackageReference "UtilsKit" */ = {
+		2730623C2768F93F001571BE /* XCRemoteSwiftPackageReference "UtilsKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/rgmc95/UtilsKit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.3.0;
-			};
-		};
-		4CBA87FE25E52E3C00D60B74 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/mxcl/PromiseKit.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.13.3;
+				minimumVersion = 2.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		4CBA87FA25E52E0B00D60B74 /* UtilsKit */ = {
+		2730623D2768F93F001571BE /* UtilsKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4CBA87F925E52E0B00D60B74 /* XCRemoteSwiftPackageReference "UtilsKit" */;
+			package = 2730623C2768F93F001571BE /* XCRemoteSwiftPackageReference "UtilsKit" */;
 			productName = UtilsKit;
-		};
-		4CBA87FF25E52E3C00D60B74 /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4CBA87FE25E52E3C00D60B74 /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
