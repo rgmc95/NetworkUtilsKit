@@ -10,5 +10,5 @@ import Foundation
 
 public protocol AuthentificationRefreshableProtocol: AuthentificationProtocol {
 	
-	func refresh(from request: URLRequest, completion: @escaping (Result<Void, Error>) -> Void)
+	func refresh(from request: URLRequest) async throws
 }

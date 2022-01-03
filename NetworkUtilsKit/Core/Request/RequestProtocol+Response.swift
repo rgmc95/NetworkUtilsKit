@@ -11,9 +11,9 @@ import UtilsKit
 
 // MARK: Response
 extension RequestProtocol {
-	/**
-	 Send request and return response or error, with progress value
-	 */
+    /**
+     Send request and return response or error, with progress value
+     */
     public func response(progressBlock: ((Double) -> Void)? = nil ) async throws -> NetworkResponse {
         try await withCheckedThrowingContinuation { continuation in
             
@@ -62,12 +62,12 @@ extension RequestProtocol {
             }, progressBlock: progressBlock)
         }
     }
-	
-	/**
-	 Get the decoded response of type `T` with progress
+    
+    /**
+     Get the decoded response of type `T` with progress
      */
     public func response<T: Decodable>(_ type: T.Type,
-                                progressBlock: ((Double) -> Void)? = nil) async throws -> T {
+                                       progressBlock: ((Double) -> Void)? = nil) async throws -> T {
         let response = try await self.response(progressBlock: progressBlock)
         
         guard
@@ -86,11 +86,10 @@ extension RequestProtocol {
     }
     
     // MARK: Send
-	/**
-	 Send request and return  error if failed
-	 */
-    public func send(completion: ((Result<Void, Error>) -> Void)? = nil,
-					  progressBlock: ((Double) -> Void)? = nil ) async throws {
+    /**
+     Send request and return  error if failed
+     */
+    public func send(progressBlock: ((Double) -> Void)? = nil ) async throws {
         _ = try await self.response(progressBlock: progressBlock)
-	}
+    }
 }
