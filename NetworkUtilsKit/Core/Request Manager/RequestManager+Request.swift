@@ -166,9 +166,8 @@ extension RequestManager {
 	 - parameter result: Request Result
 	 */
 	public func request(_ request: RequestProtocol,
-						result: ((Result<NetworkResponse, Error>) -> Void)? = nil,
-						progressBlock: ((Double) -> Void)? = nil) {
-		
+						progressBlock: ((Double) -> Void)? = nil) async throws -> NetworkResponse {
+		try await withCheckedThrowingContinuation { continuation in
 		self.request(scheme: request.scheme,
 					 host: request.host,
 					 path: request.path,
@@ -183,7 +182,8 @@ extension RequestManager {
 					 description: request.description,
 					 retryAuthentification: request.canRefreshToken,
 					 cachePolicy: request.cachePolicy,
-					 completion: result,
+					 completion: { continuation.resume(with: $0) },
 					 progressBlock: progressBlock)
+		}
 	}
 }

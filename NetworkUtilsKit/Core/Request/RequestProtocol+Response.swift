@@ -15,53 +15,44 @@ extension RequestProtocol {
      Send request and return response or error, with progress value
      */
     public func response(progressBlock: ((Double) -> Void)? = nil ) async throws -> NetworkResponse {
-        try await withCheckedThrowingContinuation { continuation in
-            
             if let cacheKey = self.cacheKey {
-                
                 switch self.cachePolicy {
                 case .returnCacheDataElseLoad:
                     if let data = NetworkCache.shared.get(cacheKey) {
                         log(NetworkLogType.cache, cacheKey.key)
-                        continuation.resume(returning: (statusCode: 200, data: data))
-                        return
+                        return (statusCode: 200, data: data)
                     }
                     
                 case .returnCacheDataDontLoad:
                     if let data = NetworkCache.shared.get(cacheKey) {
                         log(NetworkLogType.cache, cacheKey.key)
-                        continuation.resume(returning: (statusCode: 200, data: data))
+                        return (statusCode: 200, data: data)
                     } else {
                         log(NetworkLogType.cache, cacheKey.key, error: RequestError.emptyCache)
-                        continuation.resume(throwing: RequestError.emptyCache)
+                        throw RequestError.emptyCache
                     }
-                    return
                     
                 default:
                     break
                 }
             }
             
-            RequestManager.shared.request(self,
-                                          result: { result in
-                switch result {
-                case .success(let response):
-                    if let cacheKey = self.cacheKey {
-                        NetworkCache.shared.set(response.data, for: cacheKey)
-                    }
-                    continuation.resume(returning: response)
-                    
-                case .failure(let error):
-                    if let cacheKey = self.cacheKey, let data = NetworkCache.shared.get(cacheKey) {
-                        continuation.resume(returning: (statusCode: (error as? RequestError)?.statusCode,
-                                                        data: data))
-                    } else {
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }, progressBlock: progressBlock)
-        }
-    }
+		do {
+			let response = try await RequestManager.shared.request(self)
+			if let cacheKey = self.cacheKey {
+				NetworkCache.shared.set(response.data, for: cacheKey)
+			}
+			return response
+		} catch {
+			if let cacheKey = self.cacheKey, let data = NetworkCache.shared.get(cacheKey) {
+				log(NetworkLogType.cache, cacheKey.key)
+				return (statusCode: (error as? RequestError)?.statusCode,
+						data: data)
+			} else {
+				throw error
+			}
+		}
+	}
     
     /**
      Get the decoded response of type `T` with progress
