@@ -65,18 +65,40 @@ extension RequestProtocol {
         "\(self.method.rawValue) - \(self.identifier ?? "\("\(self.scheme)://\(self.host)\(self.path)")")"
     }
 	
+	var parametersArray: ParametersArray? {
+		self.parameters?
+			.compactMap { (key: String, value: Any) in
+			(key, value)
+			}
+		.sorted { $0.0 < $1.0 }
+	}
+	
 	public var request: URLRequest? {
 		try? RequestManager.shared.buildRequest(scheme: self.scheme,
 										   host: self.host,
 										   path: self.path,
 										   port: self.port,
 										   method: self.method,
-										   parameters: self.parameters,
+										   parameters: self.parametersArray,
 										   fileList: self.fileList,
 										   encoding: self.encoding,
 										   headers: self.headers,
 										   authentification: self.authentification,
 										   cachePolicy: self.cachePolicy)
+	}
+	
+	public var requestWithoutAuthentification: URLRequest? {
+		try? RequestManager.shared.buildRequest(scheme: self.scheme,
+													   host: self.host,
+													   path: self.path,
+													   port: self.port,
+													   method: self.method,
+													   parameters: self.parametersArray,
+													   fileList: self.fileList,
+													   encoding: self.encoding,
+													   headers: self.headers,
+													   authentification: nil,
+													   cachePolicy: self.cachePolicy)
 	}
 }
 

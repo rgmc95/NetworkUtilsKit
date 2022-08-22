@@ -17,6 +17,7 @@ public typealias Headers = [String: String]
 	Override AutentificationProtocol parameters if exists
 */
 public typealias Parameters = [String: Any]
+typealias ParametersArray = [(key: String, value: Any)]
 
 /// Network reponse: staus code and data
 public typealias NetworkResponse = (statusCode: Int?, data: Data?)
@@ -57,7 +58,7 @@ extension RequestManager {
                                   host: String,
                                   path: String,
                                   port: Int?,
-                                  parameters: Parameters? = nil,
+                                  parameters: ParametersArray? = nil,
                                   encoding: Encoding = .url,
                                   authentification: AuthentificationProtocol? = nil) -> URLComponents {
         var components = URLComponents()
@@ -94,14 +95,16 @@ extension RequestManager {
         return components
     }
     
-    private func getJSONBodyData(parameters: Parameters?,
+    private func getJSONBodyData(parameters: ParametersArray?,
                                  authentification: AuthentificationProtocol?) -> Data? {
         
-        var finalBodyParameters: Parameters = authentification?.bodyParameters ?? [:]
+		var finalBodyParameters: ParametersArray = authentification?.bodyParameters.compactMap { (key: String, value: Any) in
+			(key, value)
+		} ?? []
         
         // Parameters
         parameters?.forEach {
-            finalBodyParameters[$0.key] = $0.value
+			finalBodyParameters.append((key: $0.key, value: $0.value))
         }
 
         var dataBody: Data?
@@ -138,7 +141,7 @@ extension RequestManager {
                                path: String,
                                port: Int?,
                                method: RequestMethod,
-                               parameters: Parameters? = nil,
+                               parameters: ParametersArray? = nil,
                                fileList: [String: URL]? = nil,
                                encoding: Encoding = .url,
                                headers: Headers? = nil,
@@ -179,7 +182,7 @@ extension RequestManager {
                 }
                 
                 //3. Add string parameters
-                for (paramName, paramValue) in parameters ?? [:] {
+                for (paramName, paramValue) in parameters ?? [] {
                     if let paramValue: String = paramValue as? String {
                         formData.append(value: paramValue, name: paramName)
                     }
