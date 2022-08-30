@@ -98,13 +98,11 @@ extension RequestManager {
     private func getJSONBodyData(parameters: ParametersArray?,
                                  authentification: AuthentificationProtocol?) -> Data? {
         
-		var finalBodyParameters: ParametersArray = authentification?.bodyParameters.compactMap { (key: String, value: Any) in
-			(key, value)
-		} ?? []
+		var finalBodyParameters: Parameters = authentification?.bodyParameters ?? [:]
         
         // Parameters
         parameters?.forEach {
-			finalBodyParameters.append((key: $0.key, value: $0.value))
+			finalBodyParameters[$0.key] = $0.value
         }
 
         var dataBody: Data?
