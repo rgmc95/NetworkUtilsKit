@@ -56,7 +56,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
 			}
 			return
 		} else {
-			let error = ResponseError.network(response: response)
+			let error = ResponseError.network(response: response, data: nil)
 			log(NetworkLogType.error, identifier, error: error)
 			
 			self.completion?(.failure(error))
@@ -72,7 +72,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
 			return
 		}
 		
-		let requestError = ResponseError.network(response: response)
+		let requestError = ResponseError.network(response: response, data: nil)
 		
 		log(NetworkLogType.error, identifier, error: requestError)
 		

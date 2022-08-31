@@ -16,7 +16,7 @@ public enum ResponseError: Error, LocalizedError {
                    message: String? = nil)
     case data
     case json
-    case network(response: HTTPURLResponse?)
+	case network(response: HTTPURLResponse?, data: Data?)
     case noMock
     
     public var errorDescription: String? {
@@ -33,7 +33,7 @@ public enum ResponseError: Error, LocalizedError {
         case .json:
             return "JSON error"
             
-        case .network(let response):
+        case .network(let response, _):
             guard let statusCode = response?.statusCode else { return "Unkown Error" }
             return "\(statusCode): \(HTTPURLResponse.localizedString(forStatusCode: statusCode))"
             
@@ -56,7 +56,7 @@ public enum ResponseError: Error, LocalizedError {
         case .json:
             return -4
 
-        case .network(let response):
+        case .network(let response, _):
             return response?.statusCode ?? -5 
 
         case .noMock:

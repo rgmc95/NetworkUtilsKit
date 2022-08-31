@@ -56,8 +56,9 @@ extension RequestManager {
 			}
 			
 			func returnError(requestId: String,
-							 response: HTTPURLResponse) {
-				let error = ResponseError.network(response: response)
+							 response: HTTPURLResponse,
+							 data: Data?) {
+				let error = ResponseError.network(response: response, data: data)
 				log(NetworkLogType.error, requestId, error: error)
 				completion?(.failure(error))
 			}
@@ -128,15 +129,15 @@ extension RequestManager {
 															 progressBlock: progressBlock)
 												
 											case .failure:
-												returnError(requestId: requestId, response: response)
+												returnError(requestId: requestId, response: response, data: data)
 											}
 										}
 									} else {
-										returnError(requestId: requestId, response: response)
+										returnError(requestId: requestId, response: response, data: data)
 									}
 									return
 								} else {
-									returnError(requestId: requestId, response: response)
+									returnError(requestId: requestId, response: response, data: data)
 									return
 								}
 							}
