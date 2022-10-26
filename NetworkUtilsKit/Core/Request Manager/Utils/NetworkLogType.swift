@@ -14,6 +14,7 @@ import UtilsKit
 internal enum NetworkLogType: LogType {
 	case sending
 	case success
+	case successWarning
 	case error
 	case cache
 	
@@ -24,6 +25,7 @@ internal enum NetworkLogType: LogType {
 		switch self {
 		case .sending: return "➡️"
 		case .success: return "✅"
+		case .successWarning: return "✅⚠️"
 		case .cache: return "✅ 🗄"
 		case .error: return "❌"
 		case .download: return "📲"

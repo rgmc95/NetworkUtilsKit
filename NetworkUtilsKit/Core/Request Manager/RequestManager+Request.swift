@@ -77,13 +77,17 @@ extension RequestManager {
 																	authentification: authentification,
 																	cachePolicy: cachePolicy)
 					
-					let requestId: String = description ?? request.url?.absoluteString ?? ""
+					var requestId: String = description ?? request.url?.absoluteString ?? ""
 					request.timeoutInterval = self.requestTimeoutInterval ?? request.timeoutInterval
 					
 					log(NetworkLogType.sending, requestId)
 					
+					let startDate = Date()
 					let task = URLSession(configuration: self.requestConfiguration)
 						.dataTask(with: request) { data, response, error in
+							let time = Date().timeIntervalSince(startDate)
+							requestId += " - \(String(format: "%0.3f", time))s"
+							
 							queue.async {
 								self.observation?.invalidate()
 								guard let response = response as? HTTPURLResponse else {
@@ -92,7 +96,12 @@ extension RequestManager {
 								}
 								
 								if response.statusCode >= 200 && response.statusCode < 300 {
-									log(NetworkLogType.success, requestId)
+									if time > 2 {
+										log(NetworkLogType.successWarning, requestId)
+									} else {
+										log(NetworkLogType.success, requestId)
+									}
+									
 									completion?(.success((response.statusCode, data)))
 									return
 								} else if response.statusCode == 401 && retryAuthentification {
