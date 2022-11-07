@@ -5,12 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "NetworkUtilsKit",
-    platforms: [.iOS(.v13)],
+	platforms: [.iOS("13.0"), .macOS("13.0")],
     products: [
         .library(name: "NetworkUtilsKit", targets: ["NetworkUtilsKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/rgmc95/UtilsKit.git", from: "2.4.0"),
+        .package(url: "https://github.com/rgmc95/UtilsKit.git", from: "2.7.1"),
     ],
     targets: [
         .target(
