@@ -7,6 +7,8 @@
 
 import Foundation
 import UtilsKit
+import MobileCoreServices
+import UniformTypeIdentifiers
 
 extension URL {
     

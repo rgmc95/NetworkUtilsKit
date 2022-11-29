@@ -12,7 +12,8 @@ import UtilsKit
 // MARK: - Request
 extension RequestManager {
 	
-	//swiftlint:disable closure_body_length
+    //swiftlint:disable closure_body_length
+	//swiftlint:disable function_body_length
 	private func request(
 		scheme: String,
 		host: String,
