@@ -24,6 +24,9 @@ public protocol RequestProtocol: CustomStringConvertible {
     /// Request port
     var port: Int? { get }
     
+    /// Request warning time response
+    var warningTime: TimeInterval { get }
+    
     /// Request method
     var method: RequestMethod { get }
     
@@ -139,6 +142,9 @@ extension RequestProtocol {
 	
 	/// Token refreachable
 	public var canRefreshToken: Bool { true }
+    
+    /// Request warning time response if needed
+    public var warningTime: TimeInterval { 2 }
 }
 
 extension RequestProtocol {
