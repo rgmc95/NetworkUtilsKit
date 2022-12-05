@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "NetworkUtilsKit", targets: ["NetworkUtilsKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/rgmc95/UtilsKit.git", from: "2.7.1"),
+        .package(url: "https://github.com/rgmc95/UtilsKit.git", from: "3.0.0"),
     ],
     targets: [
         .target(
