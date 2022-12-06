@@ -15,7 +15,6 @@ let package = Package(
     targets: [
         .target(
             name: "NetworkUtilsKit",
-            dependencies: ["UtilsKit"],
-            path: "./NetworkUtilsKit/Core")
+            dependencies: ["UtilsKitCore"])
     ]
 )

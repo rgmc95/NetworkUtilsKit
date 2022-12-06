@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'Core' do |core|
     core.dependency 'UtilsKit', '~> 2.4'
-    core.source_files = 'NetworkUtilsKit/Core/**/*.{h,m,swift}'
+    core.source_files = 'Sources/**/*.{h,m,swift}'
   end
 
 end

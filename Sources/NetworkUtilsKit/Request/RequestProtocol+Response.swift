@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import UtilsKit
+import UtilsKitCore
 
 // MARK: Response
 extension RequestProtocol {

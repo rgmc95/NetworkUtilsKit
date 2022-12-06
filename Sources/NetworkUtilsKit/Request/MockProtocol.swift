@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import UtilsKit
+import UtilsKitCore
 
 /// This protocol represents a mocked request to execute
 public protocol MockProtocol: RequestProtocol {

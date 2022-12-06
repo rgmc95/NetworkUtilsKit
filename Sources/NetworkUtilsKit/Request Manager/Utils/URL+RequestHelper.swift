@@ -8,8 +8,8 @@
 #if canImport(CoreServices)
 
 import Foundation
-import UtilsKit
 import CoreServices
+import UtilsKitCore
 
 extension URL {
     

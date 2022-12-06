@@ -6,7 +6,7 @@
 //  Copyright © 2021 RGMC. All rights reserved.
 //
 
-import UtilsKit
+import UtilsKitCore
 
 /**
  Network Log type.
