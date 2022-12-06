@@ -5,10 +5,11 @@
 //  Created by David Douard on 19/01/2021.
 //
 
+#if canImport(CoreServices)
+
 import Foundation
 import UtilsKit
-import MobileCoreServices
-import UniformTypeIdentifiers
+import CoreServices
 
 extension URL {
     
@@ -48,3 +49,5 @@ extension URL {
         }
     }
 }
+
+#endif

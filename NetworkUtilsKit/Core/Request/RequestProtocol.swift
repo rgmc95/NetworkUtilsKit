@@ -7,7 +7,10 @@
 //
 
 import Foundation
-import UtilsKit
+
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// This protocol represents a full request to execute
 public protocol RequestProtocol: CustomStringConvertible {
@@ -53,12 +56,12 @@ public protocol RequestProtocol: CustomStringConvertible {
     
     /// Request identifier
     var identifier: String? { get }
-
+    
     /// Request cache Policy
     var cachePolicy: NSURLRequest.CachePolicy { get }
-	
-	/// Token refreachable
-	var canRefreshToken: Bool { get }
+    
+    /// Token refreachable
+    var canRefreshToken: Bool { get }
 }
 
 extension RequestProtocol {
@@ -67,42 +70,42 @@ extension RequestProtocol {
     public var description: String {
         "\(self.method.rawValue) - \(self.identifier ?? "\("\(self.scheme)://\(self.host)\(self.path)")")"
     }
-	
-	var parametersArray: ParametersArray? {
-		self.parameters?
-			.compactMap { (key: String, value: Any) in
-			(key, value)
-			}
-		.sorted { $0.0 < $1.0 }
-	}
-	
-	public var request: URLRequest? {
-		try? RequestManager.shared.buildRequest(scheme: self.scheme,
-										   host: self.host,
-										   path: self.path,
-										   port: self.port,
-										   method: self.method,
-										   parameters: self.parametersArray,
-										   fileList: self.fileList,
-										   encoding: self.encoding,
-										   headers: self.headers,
-										   authentification: self.authentification,
-										   cachePolicy: self.cachePolicy)
-	}
-	
-	public var requestWithoutAuthentification: URLRequest? {
-		try? RequestManager.shared.buildRequest(scheme: self.scheme,
-													   host: self.host,
-													   path: self.path,
-													   port: self.port,
-													   method: self.method,
-													   parameters: self.parametersArray,
-													   fileList: self.fileList,
-													   encoding: self.encoding,
-													   headers: self.headers,
-													   authentification: nil,
-													   cachePolicy: self.cachePolicy)
-	}
+    
+    var parametersArray: ParametersArray? {
+        self.parameters?
+            .compactMap { (key: String, value: Any) in
+                (key, value)
+            }
+            .sorted { $0.0 < $1.0 }
+    }
+    
+    public var request: URLRequest? {
+        try? RequestManager.shared.buildRequest(scheme: self.scheme,
+                                                host: self.host,
+                                                path: self.path,
+                                                port: self.port,
+                                                method: self.method,
+                                                parameters: self.parametersArray,
+                                                fileList: self.fileList,
+                                                encoding: self.encoding,
+                                                headers: self.headers,
+                                                authentification: self.authentification,
+                                                cachePolicy: self.cachePolicy)
+    }
+    
+    public var requestWithoutAuthentification: URLRequest? {
+        try? RequestManager.shared.buildRequest(scheme: self.scheme,
+                                                host: self.host,
+                                                path: self.path,
+                                                port: self.port,
+                                                method: self.method,
+                                                parameters: self.parametersArray,
+                                                fileList: self.fileList,
+                                                encoding: self.encoding,
+                                                headers: self.headers,
+                                                authentification: nil,
+                                                cachePolicy: self.cachePolicy)
+    }
 }
 
 // MARK: Default values
@@ -134,26 +137,26 @@ extension RequestProtocol {
     
     /// Request identifier
     public var identifier: String? { nil }
-
+    
     /** Request cache Policy. Default value is ".reloadIgnoringLocalCacheData" wich means you'll get an error if server respond "304 not modified"
      If you rather get a 200 and cached response instead of error 304 :  you should use ".useProtocolCachePolicy" which is the default Apple policy
      */
     public var cachePolicy: NSURLRequest.CachePolicy { .reloadIgnoringLocalCacheData }
-	
-	/// Token refreachable
-	public var canRefreshToken: Bool { true }
+    
+    /// Token refreachable
+    public var canRefreshToken: Bool { true }
     
     /// Request warning time response if needed
     public var warningTime: TimeInterval { 2 }
 }
 
 extension RequestProtocol {
-	
-	/**
-	 Clear request cache
-	 */
-	public func clearCache() {
-		guard let cacheKey = self.cacheKey else { return }
-		NetworkCache.shared.delete(cacheKey)
-	}
+    
+    /**
+     Clear request cache
+     */
+    public func clearCache() {
+        guard let cacheKey = self.cacheKey else { return }
+        NetworkCache.shared.delete(cacheKey)
+    }
 }

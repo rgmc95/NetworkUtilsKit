@@ -8,7 +8,11 @@
 
 import Foundation
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public protocol AuthentificationRefreshableProtocol: AuthentificationProtocol {
-	
-	func refresh(from request: URLRequest) async throws
+    
+    func refresh(from request: URLRequest) async throws
 }

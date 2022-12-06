@@ -15,7 +15,9 @@ public enum Encoding {
     
     /// JSON encoding
     case json
-
+    
+#if canImport(CoreServices)
     /// Form Data
     case formData
+#endif
 }

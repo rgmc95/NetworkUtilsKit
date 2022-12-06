@@ -9,16 +9,20 @@
 import Foundation
 import UtilsKit
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 // MARK: - Request
 extension RequestManager {
-	
+    
     //swiftlint:disable closure_body_length
-	//swiftlint:disable function_body_length
-	private func request(
-		scheme: String,
-		host: String,
-		path: String,
-		port: Int?,
+    //swiftlint:disable function_body_length
+    private func request(
+        scheme: String,
+        host: String,
+        path: String,
+        port: Int?,
         warningTime: Double = 2,
         method: RequestMethod = .get,
         parameters: ParametersArray? = nil,
@@ -58,7 +62,9 @@ extension RequestManager {
                             requestId += " - \(String(format: "%0.3f", time))s"
                             
                             queue.async {
+#if canImport(CoreServices)
                                 self?.observation?.invalidate()
+#endif
                                 guard let response = response as? HTTPURLResponse else {
                                     completion?(.failure(error ?? ResponseError.unknow))
                                     return
@@ -131,6 +137,7 @@ extension RequestManager {
                             }
                         }
                     
+#if canImport(CoreServices)
                     if let progressBlock: ((Double) -> Void) = progressBlock {
                         // Don't forget to invalidate the observation when you don't need it anymore.
                         self.observation = task.progress.observe(\.fractionCompleted) { progress, _ in
@@ -139,10 +146,13 @@ extension RequestManager {
                             }
                         }
                     }
+#endif
                     
                     task.resume()
                 } catch {
+#if canImport(CoreServices)
                     self.observation?.invalidate()
+#endif
                     completion?(.failure(error))
                     return
                 }
