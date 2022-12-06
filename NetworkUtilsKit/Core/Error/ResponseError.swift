@@ -6,8 +6,11 @@
 //  Copyright © 2021 RGMC. All rights reserved.
 //
 
-import UtilsKit
 import Foundation
+
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 // MARK: - Error
 public enum ResponseError: Error, LocalizedError {
@@ -16,7 +19,7 @@ public enum ResponseError: Error, LocalizedError {
                    message: String? = nil)
     case data
     case json
-	case network(response: HTTPURLResponse?, data: Data?)
+    case network(response: HTTPURLResponse?, data: Data?)
     case noMock
     
     public var errorDescription: String? {
@@ -41,24 +44,24 @@ public enum ResponseError: Error, LocalizedError {
             return "No mock file found"
         }
     }
-
+    
     public var code: Int {
         switch self {
         case .unknow:
             return -1
-
+            
         case .decodable:
             return -2
-
+            
         case .data:
             return -3
-
+            
         case .json:
             return -4
-
+            
         case .network(let response, _):
-            return response?.statusCode ?? -5 
-
+            return response?.statusCode ?? -5
+            
         case .noMock:
             return -6
         }

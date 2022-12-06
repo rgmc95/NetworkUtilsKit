@@ -8,14 +8,19 @@
 
 import Foundation
 import UtilsKit
+
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 /// Request headers
 public typealias Headers = [String: String]
 
 /** Request parameters
-
-	- Warning:
-	Override AutentificationProtocol parameters if exists
-*/
+ 
+ - Warning:
+ Override AutentificationProtocol parameters if exists
+ */
 public typealias Parameters = [String: Any]
 typealias ParametersArray = [(key: String, value: Any)]
 
@@ -53,7 +58,7 @@ public class RequestManager {
 
 // MARK: - Utils
 extension RequestManager {
-
+    
     private func getUrlComponents(scheme: String,
                                   host: String,
                                   path: String,
@@ -75,18 +80,18 @@ extension RequestManager {
             parameters?.forEach({
                 finalUrlParameters.append(URLQueryItem(name: $0.key, value: "\($0.value)"))
             })
-			
+            
         default:
-			break
+            break
         }
-		
-		// Authen Params
-		authentification?.urlQueryItems.forEach { query in
-			if !finalUrlParameters.contains(where: { $0.name == query.name }) {
-				finalUrlParameters.append(query)
-			}
-		}
-		
+        
+        // Authen Params
+        authentification?.urlQueryItems.forEach { query in
+            if !finalUrlParameters.contains(where: { $0.name == query.name }) {
+                finalUrlParameters.append(query)
+            }
+        }
+        
         
         if !finalUrlParameters.isEmpty {
             components.queryItems = finalUrlParameters
@@ -98,13 +103,13 @@ extension RequestManager {
     private func getJSONBodyData(parameters: ParametersArray?,
                                  authentification: AuthentificationProtocol?) -> Data? {
         
-		var finalBodyParameters: Parameters = authentification?.bodyParameters ?? [:]
+        var finalBodyParameters: Parameters = authentification?.bodyParameters ?? [:]
         
         // Parameters
         parameters?.forEach {
-			finalBodyParameters[$0.key] = $0.value
+            finalBodyParameters[$0.key] = $0.value
         }
-
+        
         var dataBody: Data?
         
         if !finalBodyParameters.isEmpty {
@@ -118,7 +123,7 @@ extension RequestManager {
                 log(DefaultLogType.data, "JSON is invalid", error: RequestError.json)
             }
         }
-
+        
         return dataBody
     }
     
@@ -159,11 +164,11 @@ extension RequestManager {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.cachePolicy = cachePolicy // .reloadIgnoringLocalCacheData allow reponse 304 instead of 200.
-		
+        
         // Final headers
         let finalHeaders = self.getHeaders(headers: headers, authentification: authentification)
         finalHeaders.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
-
+        
         
         switch encoding {
         case .json:
