@@ -47,7 +47,9 @@ public class RequestManager {
     /// Interval before request time out
     public var downloadTimeoutInterval: TimeInterval?
     
+#if canImport(CoreServices)
     internal var observation: NSKeyValueObservation?
+#endif
     
     // MARK: - Init
     private init() {
@@ -176,6 +178,7 @@ extension RequestManager {
             request.httpBody = self.getJSONBodyData(parameters: parameters,
                                                     authentification: authentification)
             
+#if canImport(CoreServices)
         case .formData:
             request.buildFormDataBody { formData in
                 
@@ -191,6 +194,7 @@ extension RequestManager {
                     }
                 }
             }
+#endif
             
         default: break
         }
