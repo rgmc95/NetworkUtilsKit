@@ -6,7 +6,14 @@
 //  Copyright © 2019 RGMC. All rights reserved.
 //
 import Foundation
+
+#if canImport(UtilsKitCore)
 import UtilsKitCore
+#endif
+
+#if canImport(UtilsKit)
+import UtilsKit
+#endif
 
 #if canImport(FoundationNetworking)
 import FoundationNetworking

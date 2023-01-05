@@ -7,7 +7,14 @@
 //
 
 import Foundation
+
+#if canImport(UtilsKitCore)
 import UtilsKitCore
+#endif
+
+#if canImport(UtilsKit)
+import UtilsKit
+#endif
 
 /// This protocol represents a mocked request to execute
 public protocol MockProtocol: RequestProtocol {

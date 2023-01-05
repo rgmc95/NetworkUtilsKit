@@ -7,7 +7,14 @@
 //
 
 import Foundation
+
+#if canImport(UtilsKitCore)
 import UtilsKitCore
+#endif
+
+#if canImport(UtilsKit)
+import UtilsKit
+#endif
 
 #if canImport(FoundationNetworking)
 import FoundationNetworking

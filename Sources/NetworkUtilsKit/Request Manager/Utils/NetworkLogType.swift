@@ -6,7 +6,13 @@
 //  Copyright © 2021 RGMC. All rights reserved.
 //
 
+#if canImport(UtilsKitCore)
 import UtilsKitCore
+#endif
+
+#if canImport(UtilsKit)
+import UtilsKit
+#endif
 
 /**
  Network Log type.

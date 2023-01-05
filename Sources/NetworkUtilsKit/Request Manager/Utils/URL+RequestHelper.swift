@@ -9,7 +9,13 @@
 
 import Foundation
 import CoreServices
+#if canImport(UtilsKitCore)
 import UtilsKitCore
+#endif
+
+#if canImport(UtilsKit)
+import UtilsKit
+#endif
 
 extension URL {
     
