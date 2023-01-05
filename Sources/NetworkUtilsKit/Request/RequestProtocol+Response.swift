@@ -23,7 +23,7 @@ extension RequestProtocol {
      */
     public func response(progressBlock: ((Double) -> Void)? = nil ) async throws -> NetworkResponse {
             if let cacheKey = self.cacheKey {
-                switch self.cachePolicy {
+				switch cacheKey.type {
                 case .returnCacheDataElseLoad:
                     if let data = NetworkCache.shared.get(cacheKey) {
                         log(NetworkLogType.cache, cacheKey.key)

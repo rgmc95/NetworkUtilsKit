@@ -14,16 +14,30 @@ import FoundationNetworking
 
 private let kUserDefaultsName = "UtilsKit.NetworkCache"
 
+public enum NetworkCacheType {
+	case returnCacheDataElseLoad
+	case returnCacheDataDontLoad
+	case returnLoadElseCacheData
+}
+
 public struct CacheKey {
     let key: String
     let availableDate: Date
+	let type: NetworkCacheType
     
-    public init?(key: String, days: Int? = nil, hours: Int? = nil, minutes: Int? = nil) {
-        guard let date = Calendar.current.date(byAdding: DateComponents(day: days, hour: hours, minute: minutes),
+    public init?(key: String,
+				 type: NetworkCacheType,
+				 days: Int? = nil,
+				 hours: Int? = nil,
+				 minutes: Int? = nil) {
+        guard let date = Calendar.current.date(byAdding: DateComponents(day: days,
+																		hour: hours,
+																		minute: minutes),
                                                to: Date())
         else { return nil }
         
         self.key = key
+		self.type = type
         self.availableDate = date
     }
 }
