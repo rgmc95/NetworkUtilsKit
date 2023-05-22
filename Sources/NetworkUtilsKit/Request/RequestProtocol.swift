@@ -8,6 +8,14 @@
 
 import Foundation
 
+#if canImport(UtilsKitCore)
+import UtilsKitCore
+#endif
+
+#if canImport(UtilsKit)
+import UtilsKit
+#endif
+
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -51,12 +59,6 @@ public protocol RequestProtocol: CustomStringConvertible {
     /// Cache key if needed
     var cacheKey: CacheKey? { get }
     
-    /// Request queue
-    var queue: DispatchQueue { get }
-    
-    /// Request identifier
-    var identifier: String? { get }
-    
     /// Request cache Policy
     var cachePolicy: NSURLRequest.CachePolicy { get }
     
@@ -68,7 +70,7 @@ extension RequestProtocol {
     
     /// Resquest string representable
     public var description: String {
-        "\(self.method.rawValue) - \(self.identifier ?? "\("\(self.scheme)://\(self.host)\(self.path)")")"
+        "\(self.method.rawValue) - \(self.scheme)://\(self.host)\(self.path)"
     }
     
     var parametersArray: ParametersArray? {
@@ -106,6 +108,12 @@ extension RequestProtocol {
                                                 authentification: nil,
                                                 cachePolicy: self.cachePolicy)
     }
+	
+	public func cancel() {
+		guard let request = RequestManager.shared.tasks[self.description] else { return }
+		log(NetworkLogType.cancel, self.description)
+		request.cancel()
+	}
 }
 
 // MARK: Default values
@@ -131,12 +139,6 @@ extension RequestProtocol {
     
     /// Cache key if needed
     public var cacheKey: CacheKey? { nil }
-    
-    /// Request queue. Main by default
-    public var queue: DispatchQueue { DispatchQueue.main }
-    
-    /// Request identifier
-    public var identifier: String? { nil }
     
     /** Request cache Policy. Default value is ".reloadIgnoringLocalCacheData" wich means you'll get an error if server respond "304 not modified"
      If you rather get a 200 and cached response instead of error 304 :  you should use ".useProtocolCachePolicy" which is the default Apple policy

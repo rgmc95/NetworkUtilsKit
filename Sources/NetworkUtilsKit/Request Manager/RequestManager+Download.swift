@@ -115,7 +115,6 @@ extension RequestManager {
                               encoding: Encoding = .url,
                               headers: Headers? = nil,
                               authentification: AuthentificationProtocol? = nil,
-                              identifier: String? = nil,
                               forceDownload: Bool? = false,
                               cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData,
                               completion: ((Result<Int, Error>) -> Void)? = nil,
@@ -140,7 +139,6 @@ extension RequestManager {
         
         self.downloadFileWithRequest(request: request,
                                      destinationURL: destinationURL,
-                                     identifier: identifier,
                                      forceDownload: forceDownload,
                                      completion: completion,
                                      progress: progress)
@@ -206,7 +204,6 @@ extension RequestManager {
                               encoding: request.encoding,
                               headers: request.headers,
                               authentification: request.authentification,
-                              identifier: request.identifier,
                               forceDownload: forceDownload,
                               cachePolicy: request.cachePolicy,
                               completion: { continuation.resume(with: $0) },

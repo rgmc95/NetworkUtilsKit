@@ -23,6 +23,7 @@ internal enum NetworkLogType: LogType {
 	case successWarning
 	case error
 	case cache
+	case cancel
 	
 	case download
 	case mock
@@ -30,6 +31,7 @@ internal enum NetworkLogType: LogType {
 	internal var prefix: String {
 		switch self {
 		case .sending: return "➡️"
+		case .cancel: return "⏹️"
 		case .success: return "✅"
 		case .successWarning: return "✅⚠️"
 		case .cache: return "✅ 🗄"

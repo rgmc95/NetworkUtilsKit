@@ -57,6 +57,8 @@ public class RequestManager {
 #if canImport(CoreServices)
     internal var observation: NSKeyValueObservation?
 #endif
+	
+	public var tasks: [String: URLSessionDataTask] = [:]
     
     // MARK: - Init
     private init() {
