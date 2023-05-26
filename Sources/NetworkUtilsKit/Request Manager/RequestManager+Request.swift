@@ -25,11 +25,15 @@ extension URLSession {
 	func data(with request: URLRequest, description: String) async throws -> (Data?, URLResponse?) {
 		try await withUnsafeThrowingContinuation { continuation in
 			let task = self.dataTask(with: request) { data, response, error in
-				RequestManager.shared.tasks.removeValue(forKey: description)
+				DispatchQueue.main.async {
+					RequestManager.shared.tasks.removeValue(forKey: description)
+				}
 				if let error = error { continuation.resume(throwing: error); return }
 				continuation.resume(returning: (data, response))
 			}
-			RequestManager.shared.tasks[description] = task
+			DispatchQueue.main.async {
+				RequestManager.shared.tasks[description] = task
+			}
 			task.resume()
 		}
 	}

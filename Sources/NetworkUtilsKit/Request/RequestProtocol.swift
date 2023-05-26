@@ -110,9 +110,13 @@ extension RequestProtocol {
     }
 	
 	public func cancel() {
-		guard let request = RequestManager.shared.tasks[self.description] else { return }
-		log(NetworkLogType.cancel, self.description)
-		request.cancel()
+		let description = self.description
+		
+		DispatchQueue.main.async {
+			guard let request = RequestManager.shared.tasks[description] else { return }
+			log(NetworkLogType.cancel, description)
+			request.cancel()
+		}
 	}
 }
 

@@ -58,6 +58,7 @@ public class RequestManager {
     internal var observation: NSKeyValueObservation?
 #endif
 	
+	@MainActor
 	public var tasks: [String: URLSessionDataTask] = [:]
     
     // MARK: - Init
