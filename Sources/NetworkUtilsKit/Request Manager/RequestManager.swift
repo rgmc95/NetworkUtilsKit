@@ -138,6 +138,31 @@ extension RequestManager {
         
         return dataBody
     }
+	
+	private func getFormEncodedBodyData(parameters: ParametersArray?,
+										authentification: AuthentificationProtocol?) -> Data? {
+		
+		var finalBodyParameters: Parameters = authentification?.bodyParameters ?? [:]
+		
+		// Parameters
+		parameters?.forEach {
+			finalBodyParameters[$0.key] = $0.value
+		}
+		
+		var dataBody: Data?
+		
+		if !finalBodyParameters.isEmpty {
+			if JSONSerialization.isValidJSONObject(finalBodyParameters) {
+				var requestBody = URLComponents()
+				requestBody.queryItems = finalBodyParameters.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
+				dataBody = requestBody.query?.data(using: .utf8)
+			} else {
+				log(DefaultLogType.data, "JSON is invalid", error: RequestError.json)
+			}
+		}
+		
+		return dataBody
+	}
     
     private func getHeaders(headers: Headers?,
                             authentification: AuthentificationProtocol?) -> Headers {
@@ -188,6 +213,11 @@ extension RequestManager {
             request.httpBody = self.getJSONBodyData(parameters: parameters,
                                                     authentification: authentification)
             
+		case .formURLEncoded:
+			request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+			request.httpBody = self.getFormEncodedBodyData(parameters: parameters,
+														   authentification: authentification)
+			
 #if canImport(CoreServices)
         case .formData:
             request.buildFormDataBody { formData in
