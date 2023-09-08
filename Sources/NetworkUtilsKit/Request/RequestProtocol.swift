@@ -48,7 +48,7 @@ public protocol RequestProtocol: CustomStringConvertible {
     var parameters: Parameters? { get }
     
     /// Request URL of local files in an array if needed
-    var fileList: [String: URL]? { get }
+    var files: [RequestFile]? { get }
     
     /// Request encoding
     var encoding: Encoding { get }
@@ -88,7 +88,7 @@ extension RequestProtocol {
                                                 port: self.port,
                                                 method: self.method,
                                                 parameters: self.parametersArray,
-                                                fileList: self.fileList,
+												files: self.files,
                                                 encoding: self.encoding,
                                                 headers: self.headers,
                                                 authentification: self.authentification,
@@ -102,7 +102,7 @@ extension RequestProtocol {
                                                 port: self.port,
                                                 method: self.method,
                                                 parameters: self.parametersArray,
-                                                fileList: self.fileList,
+												files: self.files,
                                                 encoding: self.encoding,
                                                 headers: self.headers,
                                                 authentification: nil,
@@ -133,7 +133,7 @@ extension RequestProtocol {
     public var parameters: Parameters? { nil }
     
     /// Request URL of local files in an array if needed
-    public var fileList: [String: URL]? { nil }
+    public var files: [RequestFile]? { nil }
     
     /// Request encoding
     public var encoding: Encoding { .url }

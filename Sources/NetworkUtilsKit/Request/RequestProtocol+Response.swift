@@ -21,7 +21,7 @@ extension RequestProtocol {
     /**
      Send request and return response or error, with progress value
      */
-    public func response(progressBlock: ((Double) -> Void)? = nil ) async throws -> NetworkResponse {
+    public func response() async throws -> NetworkResponse {
             if let cacheKey = self.cacheKey {
 				switch cacheKey.type {
                 case .returnCacheDataElseLoad:
@@ -64,9 +64,8 @@ extension RequestProtocol {
     /**
      Get the decoded response of type `T` with progress
      */
-    public func response<T: Decodable>(_ type: T.Type,
-                                       progressBlock: ((Double) -> Void)? = nil) async throws -> T {
-        let response = try await self.response(progressBlock: progressBlock)
+    public func response<T: Decodable>(_ type: T.Type) async throws -> T {
+        let response = try await self.response()
         
         guard
             let data = response.data
@@ -87,7 +86,7 @@ extension RequestProtocol {
     /**
      Send request and return  error if failed
      */
-    public func send(progressBlock: ((Double) -> Void)? = nil ) async throws {
-        _ = try await self.response(progressBlock: progressBlock)
+    public func send() async throws {
+        _ = try await self.response()
     }
 }

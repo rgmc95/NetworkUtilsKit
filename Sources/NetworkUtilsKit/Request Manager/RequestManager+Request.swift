@@ -52,14 +52,13 @@ extension RequestManager {
 		warningTime: Double = 2,
 		method: RequestMethod = .get,
 		parameters: ParametersArray? = nil,
-		fileList: [String: URL]? = nil,
+		files: [RequestFile]? = nil,
 		encoding: Encoding = .url,
 		headers: Headers? = nil,
 		authentification: AuthentificationProtocol? = nil,
 		description: String,
 		retryAuthentification: Bool = true,
-		cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData,
-		progressBlock: ((Double) -> Void)? = nil) async throws -> NetworkResponse {
+		cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData) async throws -> NetworkResponse {
 			
 			var request: URLRequest = try self.buildRequest(scheme: scheme,
 															host: host,
@@ -67,7 +66,7 @@ extension RequestManager {
 															port: port,
 															method: method,
 															parameters: parameters,
-															fileList: fileList,
+															files: files,
 															encoding: encoding,
 															headers: headers,
 															authentification: authentification,
@@ -121,14 +120,13 @@ extension RequestManager {
 											  warningTime: warningTime,
 											  method: method,
 											  parameters: parameters,
-											  fileList: fileList,
+											  files: files,
 											  encoding: encoding,
 											  headers: headers,
 											  authentification: authentification,
 											  description: description,
 											  retryAuthentification: false,
-											  cachePolicy: cachePolicy,
-											  progressBlock: progressBlock)
+											  cachePolicy: cachePolicy)
 			} else {
 				throw self.returnError(requestId: requestId,
 									   response: response,
@@ -163,8 +161,7 @@ extension RequestManager {
 	 - parameter request: Request
 	 - parameter result: Request Result
 	 */
-	public func request(_ request: RequestProtocol,
-						progressBlock: ((Double) -> Void)? = nil) async throws -> NetworkResponse {
+	public func request(_ request: RequestProtocol) async throws -> NetworkResponse {
 		try await self.request(scheme: request.scheme,
 							   host: request.host,
 							   path: request.path,
@@ -172,13 +169,12 @@ extension RequestManager {
 							   warningTime: request.warningTime,
 							   method: request.method,
 							   parameters: request.parametersArray,
-							   fileList: request.fileList,
+							   files: request.files,
 							   encoding: request.encoding,
 							   headers: request.headers,
 							   authentification: request.authentification,
 							   description: request.description,
 							   retryAuthentification: request.canRefreshToken,
-							   cachePolicy: request.cachePolicy,
-							   progressBlock: progressBlock)
+							   cachePolicy: request.cachePolicy)
 	}
 }

@@ -53,10 +53,6 @@ public class RequestManager {
     
     /// Interval before request time out
     public var downloadTimeoutInterval: TimeInterval?
-    
-#if canImport(CoreServices)
-    internal var observation: NSKeyValueObservation?
-#endif
 	
 	@MainActor
 	public var tasks: [String: URLSessionDataTask] = [:]
@@ -179,13 +175,13 @@ extension RequestManager {
     internal func buildRequest(scheme: String,
                                host: String,
                                path: String,
-                               port: Int?,
-                               method: RequestMethod,
-                               parameters: ParametersArray? = nil,
-                               fileList: [String: URL]? = nil,
-                               encoding: Encoding = .url,
-                               headers: Headers? = nil,
-                               authentification: AuthentificationProtocol? = nil,
+							   port: Int?,
+							   method: RequestMethod,
+							   parameters: ParametersArray? = nil,
+							   files: [RequestFile]? = nil,
+							   encoding: Encoding = .url,
+							   headers: Headers? = nil,
+							   authentification: AuthentificationProtocol? = nil,
                                cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData) throws -> URLRequest {
         // URL components
         let components = self.getUrlComponents(scheme: scheme,
@@ -218,23 +214,26 @@ extension RequestManager {
 			request.httpBody = self.getFormEncodedBodyData(parameters: parameters,
 														   authentification: authentification)
 			
-#if canImport(CoreServices)
         case .formData:
-            request.buildFormDataBody { formData in
-                
-                //1. add URL to local file
-                for (fileName, oneFile) in fileList ?? [:] {
-                    try? formData.append(fileUrl: oneFile, name: fileName)
-                }
-                
-                //3. Add string parameters
-                for (paramName, paramValue) in parameters ?? [] {
-                    if let paramValue: String = paramValue as? String {
-                        formData.append(value: paramValue, name: paramName)
-                    }
-                }
-            }
-#endif
+			var multipart = MultipartRequest()
+			
+			for parameter in parameters ?? [] {
+				multipart.add(key: parameter.key, value: "\(parameter.value)")
+			}
+			
+			for file in files ?? [] {
+				multipart.add(
+					key: file.key,
+					fileName: file.name,
+					fileMimeType: file.type,
+					fileData: file.data
+				)
+			}
+			
+			request.setValue(multipart.httpContentTypeHeadeValue,
+							 forHTTPHeaderField: "Content-Type")
+			
+			request.httpBody = multipart.httpBody
             
         default: break
         }

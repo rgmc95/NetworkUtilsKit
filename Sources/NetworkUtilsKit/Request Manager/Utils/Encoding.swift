@@ -19,8 +19,6 @@ public enum Encoding {
 	/// Form URL Encoded
 	case formURLEncoded
     
-#if canImport(CoreServices)
     /// Form Data
     case formData
-#endif
 }
