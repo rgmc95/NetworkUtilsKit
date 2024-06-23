@@ -134,7 +134,6 @@ extension RequestManager {
 			}
 		}
 	
-	@Sendable
 	private func refresh(authentification: [AuthentificationRefreshableProtocol],
 						 requestId: String,
 						 request: URLRequest) async throws {
