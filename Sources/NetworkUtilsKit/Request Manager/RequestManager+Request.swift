@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 
 #if canImport(UtilsKitCore)
 import UtilsKitCore
@@ -74,7 +75,7 @@ extension RequestManager {
 			
 			request.timeoutInterval = self.requestTimeoutInterval ?? request.timeoutInterval
 			
-			log(NetworkLogType.sending, description)
+			Logger.requestSend.notice(message: description)
 			
 			let startDate = Date()
 			let session = URLSession(configuration: self.requestConfiguration)
@@ -88,9 +89,9 @@ extension RequestManager {
 			
 			if response.statusCode >= 200 && response.statusCode < 300 {
 				if time > warningTime {
-					log(NetworkLogType.successWarning, requestId)
+					Logger.requestSuccess.warning(message: requestId)
 				} else {
-					log(NetworkLogType.success, requestId)
+					Logger.requestSuccess.info(message: requestId)
 				}
 				return (response.statusCode, data)
 			} else if response.statusCode == 401 && retryAuthentification {
@@ -151,7 +152,7 @@ extension RequestManager {
 							 response: HTTPURLResponse,
 							 data: Data?) -> Error  {
 		let error = ResponseError.network(response: response, data: data)
-		log(NetworkLogType.error, requestId, error: error)
+		Logger.requestFail.fault(message: requestId, error: error)
 		return error
 	}
 	

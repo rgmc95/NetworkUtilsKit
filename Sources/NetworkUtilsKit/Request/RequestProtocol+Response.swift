@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 
 #if canImport(UtilsKitCore)
 import UtilsKitCore
@@ -26,16 +27,16 @@ extension RequestProtocol {
 				switch cacheKey.type {
                 case .returnCacheDataElseLoad:
                     if let data = NetworkCache.shared.get(cacheKey) {
-                        log(NetworkLogType.cache, cacheKey.key)
+						Logger.cache.notice(message: cacheKey.key)
                         return (statusCode: 200, data: data)
                     }
                     
                 case .returnCacheDataDontLoad:
                     if let data = NetworkCache.shared.get(cacheKey) {
-                        log(NetworkLogType.cache, cacheKey.key)
+						Logger.cache.notice(message: cacheKey.key)
                         return (statusCode: 200, data: data)
                     } else {
-                        log(NetworkLogType.cache, cacheKey.key, error: RequestError.emptyCache)
+						Logger.cache.fault(message: cacheKey.key, error: RequestError.emptyCache)
                         throw RequestError.emptyCache
                     }
                     
@@ -52,7 +53,7 @@ extension RequestProtocol {
 			return response
 		} catch {
 			if let cacheKey = self.cacheKey, let data = NetworkCache.shared.get(cacheKey) {
-				log(NetworkLogType.cache, cacheKey.key)
+				Logger.cache.notice(message: cacheKey.key)
 				return (statusCode: (error as? RequestError)?.statusCode,
 						data: data)
 			} else {
@@ -77,7 +78,7 @@ extension RequestProtocol {
             let objects = try T.decode(from: data)
             return objects
         } catch {
-            log(NetworkLogType.error, error.localizedDescription, error: nil)
+			Logger.decode.fault(message: self.description)
             throw error
         }
     }

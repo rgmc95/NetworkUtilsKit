@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 
 #if canImport(UtilsKitCore)
 import UtilsKitCore
@@ -114,7 +115,7 @@ extension RequestProtocol {
 		
 		DispatchQueue.main.async {
 			guard let request = RequestManager.shared.tasks[description] else { return }
-			log(NetworkLogType.cancel, description)
+			Logger.requestCancel.notice(message: description)
 			request.cancel()
 		}
 	}

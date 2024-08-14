@@ -6,6 +6,7 @@
 //  Copyright © 2019 RGMC. All rights reserved.
 //
 import Foundation
+import OSLog
 
 #if canImport(UtilsKitCore)
 import UtilsKitCore
@@ -56,7 +57,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
         
         if response.statusCode >= 200 && response.statusCode < 300 {
             
-            log(NetworkLogType.download, identifier)
+			Logger.download.notice(message: identifier ?? "")
             
             do {
                 try FileManager.default.moveItem(at: location, to: destination)
@@ -67,7 +68,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
             return
         } else {
             let error = ResponseError.network(response: response, data: nil)
-            log(NetworkLogType.error, identifier, error: error)
+			Logger.download.fault(message: identifier ?? "", error: error)
             
             self.completion?(.failure(error))
             
@@ -83,9 +84,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
         }
         
         let requestError = ResponseError.network(response: response, data: nil)
-        
-        log(NetworkLogType.error, identifier, error: requestError)
-        
+		Logger.download.fault(message: identifier ?? "", error: requestError)
         self.completion?(.failure(requestError))
         
         return
@@ -176,7 +175,7 @@ extension RequestManager {
             request.timeoutInterval = timeoutInterval
         }
         
-        log(NetworkLogType.download, requestId)
+		Logger.download.notice(message: requestId)
         
         session.downloadTask(with: request).resume()
     }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 
 #if canImport(UtilsKitCore)
 import UtilsKitCore
@@ -125,10 +126,10 @@ extension RequestManager {
                 do {
                     dataBody = try JSONSerialization.data(withJSONObject: finalBodyParameters, options: [])
                 } catch {
-                    log(DefaultLogType.data, "JSON is invalid", error: error)
+					Logger.data.fault(message: "JSON is invalid", error: error)
                 }
             } else {
-                log(DefaultLogType.data, "JSON is invalid", error: RequestError.json)
+				Logger.data.fault(message: "JSON is invalid", error: RequestError.json)
             }
         }
         
@@ -153,7 +154,7 @@ extension RequestManager {
 				requestBody.queryItems = finalBodyParameters.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
 				dataBody = requestBody.query?.data(using: .utf8)
 			} else {
-				log(DefaultLogType.data, "JSON is invalid", error: RequestError.json)
+				Logger.data.fault(message: "JSON is invalid", error: RequestError.json)
 			}
 		}
 		

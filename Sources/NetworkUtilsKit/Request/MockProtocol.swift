@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 
 #if canImport(UtilsKitCore)
 import UtilsKitCore
@@ -31,16 +32,16 @@ extension RequestProtocol where Self: MockProtocol {
      */
     public func mock() async throws -> NetworkResponse {
         guard let mockPath = self.mockFileURL else {
-            log(NetworkLogType.mock, self.description, error: ResponseError.noMock)
+			Logger.mock.fault(message: self.description, error: ResponseError.noMock)
             throw ResponseError.noMock
         }
         
         do {
             let data = try Data(contentsOf: mockPath, options: .mappedIfSafe)
-            log(NetworkLogType.mock, self.description)
+			Logger.mock.notice(message: self.description)
             return (200, data)
         } catch {
-            log(NetworkLogType.mock, self.description, error: error)
+			Logger.mock.fault(message: self.description, error: error)
             throw error
         }
     }
@@ -58,7 +59,7 @@ extension RequestProtocol where Self: MockProtocol {
             return try T.decode(from: data)
         } catch {
             let responseError = ResponseError.decodable(type: "\(T.self)")
-            log(NetworkLogType.error, responseError.errorDescription, error: nil)
+			Logger.requestFail.notice(message: self.description)
             throw responseError
         }
     }
