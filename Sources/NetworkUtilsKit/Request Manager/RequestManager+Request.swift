@@ -95,6 +95,10 @@ extension RequestManager {
 				}
 				return (response.statusCode, data)
 			} else if response.statusCode == 401 && retryAuthentification {
+				let error = self.returnError(requestId: requestId,
+											 response: response,
+											 data: data)
+				
 				var refreshArray: [AuthentificationRefreshableProtocol] = []
 				
 				if let refreshAuthent = authentification as? AuthentificationRefreshableProtocol {
@@ -105,9 +109,7 @@ extension RequestManager {
 				}
 				
 				if refreshArray.isEmpty {
-					throw self.returnError(requestId: requestId,
-										   response: response,
-										   data: data)
+					throw error
 				}
 				
 				try await self.refresh(authentification: refreshArray,
