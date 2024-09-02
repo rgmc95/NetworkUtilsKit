@@ -38,6 +38,9 @@ public protocol RequestProtocol: CustomStringConvertible {
     
     /// Request warning time response
     var warningTime: TimeInterval { get }
+	
+	/// Request time out
+	var timeOut: TimeInterval { get }
     
     /// Request method
     var method: RequestMethod { get }
@@ -155,6 +158,7 @@ extension RequestProtocol {
     
     /// Request warning time response if needed
     public var warningTime: TimeInterval { 2 }
+    public var timeOut: TimeInterval { 60 }
 }
 
 extension RequestProtocol {

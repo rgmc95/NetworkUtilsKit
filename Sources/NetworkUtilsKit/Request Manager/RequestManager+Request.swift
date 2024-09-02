@@ -45,46 +45,53 @@ extension RequestManager {
 	
 	//swiftlint:disable closure_body_length
 	//swiftlint:disable function_body_length
-	private func request(
-		scheme: String,
-		host: String,
-		path: String,
-		port: Int?,
-		warningTime: Double = 2,
-		method: RequestMethod = .get,
-		parameters: ParametersArray? = nil,
-		files: [RequestFile]? = nil,
-		encoding: Encoding = .url,
-		headers: Headers? = nil,
-		authentification: AuthentificationProtocol? = nil,
-		description: String,
-		retryAuthentification: Bool = true,
-		cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData) async throws -> NetworkResponse {
-			
-			var request: URLRequest = try self.buildRequest(scheme: scheme,
-															host: host,
-															path: path,
-															port: port,
-															method: method,
-															parameters: parameters,
-															files: files,
-															encoding: encoding,
-															headers: headers,
-															authentification: authentification,
-															cachePolicy: cachePolicy)
-			
-			request.timeoutInterval = self.requestTimeoutInterval ?? request.timeoutInterval
-			
-			Logger.requestSend.notice(message: description)
-			
-			let startDate = Date()
-			let session = URLSession(configuration: self.requestConfiguration)
-			
+	private func request(scheme: String,
+						 host: String,
+						 path: String,
+						 port: Int?,
+						 warningTime: Double,
+						 timeOut: TimeInterval,
+						 method: RequestMethod = .get,
+						 parameters: ParametersArray? = nil,
+						 files: [RequestFile]? = nil,
+						 encoding: Encoding = .url,
+						 headers: Headers? = nil,
+						 authentification: AuthentificationProtocol? = nil,
+						 description: String,
+						 retryAuthentification: Bool = true,
+						 cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData) async throws -> NetworkResponse {
+		
+		// Request
+		var request: URLRequest = try self.buildRequest(scheme: scheme,
+														host: host,
+														path: path,
+														port: port,
+														method: method,
+														parameters: parameters,
+														files: files,
+														encoding: encoding,
+														headers: headers,
+														authentification: authentification,
+														cachePolicy: cachePolicy)
+		
+		request.timeoutInterval = timeOut
+		
+		Logger.requestSend.notice(message: description)
+		
+		// Date
+		let startDate = Date()
+		let session = URLSession(configuration: self.requestConfiguration)
+		session.configuration.timeoutIntervalForRequest = timeOut
+		
+		do {
+			// Call
 			let (data, response) = try await session.data(with: request, description: description)
 			
+			// Time
 			let time = Date().timeIntervalSince(startDate)
 			let requestId = "\(description) - \(String(format: "%0.3f", time))s"
 			
+			// Response
 			guard let response = response as? HTTPURLResponse else { throw ResponseError.unknow }
 			
 			if response.statusCode >= 200 && response.statusCode < 300 {
@@ -121,6 +128,7 @@ extension RequestManager {
 											  path: path,
 											  port: port,
 											  warningTime: warningTime,
+											  timeOut: timeOut,
 											  method: method,
 											  parameters: parameters,
 											  files: files,
@@ -135,7 +143,11 @@ extension RequestManager {
 									   response: response,
 									   data: data)
 			}
+		} catch {
+			Logger.requestFail.fault(message: description, error: error)
+			throw error
 		}
+	}
 	
 	private func refresh(authentification: [AuthentificationRefreshableProtocol],
 						 requestId: String,
@@ -169,6 +181,7 @@ extension RequestManager {
 							   path: request.path,
 							   port: request.port,
 							   warningTime: request.warningTime,
+							   timeOut: request.timeOut,
 							   method: request.method,
 							   parameters: request.parametersArray,
 							   files: request.files,
