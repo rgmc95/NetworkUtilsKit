@@ -76,7 +76,7 @@ extension RequestManager {
 		
 		request.timeoutInterval = timeOut
 		
-		Logger.requestSend.notice(message: description)
+		Logger.requestSend.notice("\(description)")
 		
 		// Date
 		let startDate = Date()
@@ -96,9 +96,9 @@ extension RequestManager {
 			
 			if response.statusCode >= 200 && response.statusCode < 300 {
 				if time > warningTime {
-					Logger.requestSuccess.warning(message: requestId)
+					Logger.requestSuccess.warning("\(requestId)")
 				} else {
-					Logger.requestSuccess.info(message: requestId)
+					Logger.requestSuccess.info("\(requestId)")
 				}
 				return (response.statusCode, data)
 			} else if response.statusCode == 401 && retryAuthentification {
@@ -144,7 +144,7 @@ extension RequestManager {
 									   data: data)
 			}
 		} catch {
-			Logger.requestFail.fault(message: description, error: error)
+			Logger.requestFail.fault("\(description) - \(error.localizedDescription)")
 			throw error
 		}
 	}
@@ -166,7 +166,7 @@ extension RequestManager {
 							 response: HTTPURLResponse,
 							 data: Data?) -> Error  {
 		let error = ResponseError.network(response: response, data: data)
-		Logger.requestFail.fault(message: requestId, error: error)
+		Logger.requestFail.fault("\(requestId) - \(error.localizedDescription)")
 		return error
 	}
 	

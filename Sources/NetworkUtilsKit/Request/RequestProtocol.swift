@@ -118,7 +118,7 @@ extension RequestProtocol {
 		
 		DispatchQueue.main.async {
 			guard let request = RequestManager.shared.tasks[description] else { return }
-			Logger.requestCancel.notice(message: description)
+			Logger.requestCancel.notice("\(description)")
 			request.cancel()
 		}
 	}

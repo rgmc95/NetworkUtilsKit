@@ -27,16 +27,16 @@ extension RequestProtocol {
 				switch cacheKey.type {
                 case .returnCacheDataElseLoad:
                     if let data = NetworkCache.shared.get(cacheKey) {
-						Logger.cache.notice(message: cacheKey.key)
+						Logger.cache.notice("\(cacheKey.key)")
                         return (statusCode: 200, data: data)
                     }
                     
                 case .returnCacheDataDontLoad:
                     if let data = NetworkCache.shared.get(cacheKey) {
-						Logger.cache.notice(message: cacheKey.key)
+						Logger.cache.notice("\(cacheKey.key)")
                         return (statusCode: 200, data: data)
                     } else {
-						Logger.cache.fault(message: cacheKey.key, error: RequestError.emptyCache)
+						Logger.cache.fault("\(cacheKey.key) - \(RequestError.emptyCache.localizedDescription)")
                         throw RequestError.emptyCache
                     }
                     
@@ -53,7 +53,7 @@ extension RequestProtocol {
 			return response
 		} catch {
 			if let cacheKey = self.cacheKey, let data = NetworkCache.shared.get(cacheKey) {
-				Logger.cache.notice(message: cacheKey.key)
+				Logger.cache.notice("\(cacheKey.key)")
 				return (statusCode: (error as? RequestError)?.statusCode,
 						data: data)
 			} else {
@@ -78,7 +78,7 @@ extension RequestProtocol {
             let objects = try T.decode(from: data)
             return objects
         } catch {
-			Logger.decode.fault(message: self.description)
+			Logger.decode.fault("\(self.description)")
             throw error
         }
     }

@@ -57,7 +57,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
         
         if response.statusCode >= 200 && response.statusCode < 300 {
             
-			Logger.download.notice(message: identifier ?? "")
+			Logger.download.notice("\(self.identifier ?? "")")
             
             do {
                 try FileManager.default.moveItem(at: location, to: destination)
@@ -68,7 +68,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
             return
         } else {
             let error = ResponseError.network(response: response, data: nil)
-			Logger.download.fault(message: identifier ?? "", error: error)
+			Logger.download.fault("\(self.identifier ?? "") - \(error.localizedDescription)")
             
             self.completion?(.failure(error))
             
@@ -84,7 +84,7 @@ private class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
         }
         
         let requestError = ResponseError.network(response: response, data: nil)
-		Logger.download.fault(message: identifier ?? "", error: requestError)
+		Logger.download.fault("\(self.identifier ?? "") - \(requestError.localizedDescription)")
         self.completion?(.failure(requestError))
         
         return
@@ -175,7 +175,7 @@ extension RequestManager {
             request.timeoutInterval = timeoutInterval
         }
         
-		Logger.download.notice(message: requestId)
+		Logger.download.notice("\(requestId)")
         
         session.downloadTask(with: request).resume()
     }

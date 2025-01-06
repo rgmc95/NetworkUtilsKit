@@ -32,16 +32,16 @@ extension RequestProtocol where Self: MockProtocol {
      */
     public func mock() async throws -> NetworkResponse {
         guard let mockPath = self.mockFileURL else {
-			Logger.mock.fault(message: self.description, error: ResponseError.noMock)
+			Logger.mock.fault("\(self.description) - \(ResponseError.noMock.localizedDescription)")
             throw ResponseError.noMock
         }
         
         do {
             let data = try Data(contentsOf: mockPath, options: .mappedIfSafe)
-			Logger.mock.notice(message: self.description)
+			Logger.mock.notice("\(self.description)")
             return (200, data)
         } catch {
-			Logger.mock.fault(message: self.description, error: error)
+			Logger.mock.fault("\(self.description) - \(error.localizedDescription)")
             throw error
         }
     }
@@ -59,7 +59,7 @@ extension RequestProtocol where Self: MockProtocol {
             return try T.decode(from: data)
         } catch {
             let responseError = ResponseError.decodable(type: "\(T.self)")
-			Logger.requestFail.notice(message: self.description)
+			Logger.requestFail.notice("\(self.description)")
             throw responseError
         }
     }
