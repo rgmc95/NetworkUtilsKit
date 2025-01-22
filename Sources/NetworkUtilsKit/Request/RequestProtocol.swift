@@ -48,14 +48,14 @@ public protocol RequestProtocol: CustomStringConvertible {
     /// Request headers if needed
     var headers: Headers? { get }
     
-    /// Request parameters if needed
-    var parameters: Parameters? { get }
+    /// Request url parameters if needed
+    var urlParameters: [String: String]? { get }
+	
+	/// Request parameters if needed
+	var parameters: Parameters? { get }
     
     /// Request URL of local files in an array if needed
     var files: [RequestFile]? { get }
-    
-    /// Request encoding
-    var encoding: Encoding { get }
     
     /// Request authentification if needed
     var authentification: AuthentificationProtocol? { get }
@@ -77,23 +77,15 @@ extension RequestProtocol {
         "\(self.method.rawValue) - \(self.scheme)://\(self.host)\(self.path)"
     }
     
-    var parametersArray: ParametersArray? {
-        self.parameters?
-            .compactMap { (key: String, value: Any) in
-                (key, value)
-            }
-            .sorted { $0.0 < $1.0 }
-    }
-    
     public var request: URLRequest? {
         try? RequestManager.shared.buildRequest(scheme: self.scheme,
                                                 host: self.host,
                                                 path: self.path,
                                                 port: self.port,
                                                 method: self.method,
-                                                parameters: self.parametersArray,
+												urlParameters: self.urlParameters,
+												parameters: self.parameters,
 												files: self.files,
-                                                encoding: self.encoding,
                                                 headers: self.headers,
                                                 authentification: self.authentification,
                                                 cachePolicy: self.cachePolicy)
@@ -105,9 +97,9 @@ extension RequestProtocol {
                                                 path: self.path,
                                                 port: self.port,
                                                 method: self.method,
-                                                parameters: self.parametersArray,
+												urlParameters: self.urlParameters,
+												parameters: self.parameters,
 												files: self.files,
-                                                encoding: self.encoding,
                                                 headers: self.headers,
                                                 authentification: nil,
                                                 cachePolicy: self.cachePolicy)
@@ -132,15 +124,15 @@ extension RequestProtocol {
     
     /// Request headers if needed
     public var headers: Headers? { nil }
-    
-    /// Request parameters if needed
-    public var parameters: Parameters? { nil }
+	
+	/// Request url parameters if needed
+	public var urlParameters: [String: String]? { nil }
+	
+	/// Request parameters if needed
+	public var parameters: Parameters? { nil }
     
     /// Request URL of local files in an array if needed
     public var files: [RequestFile]? { nil }
-    
-    /// Request encoding
-    public var encoding: Encoding { .url }
     
     /// Request authentification if needed
     public var authentification: AuthentificationProtocol? { nil }

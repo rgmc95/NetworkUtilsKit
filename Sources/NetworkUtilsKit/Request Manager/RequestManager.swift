@@ -29,7 +29,6 @@ public typealias Headers = [String: String]
  - Warning:
  Override AutentificationProtocol parameters if exists
  */
-public typealias Parameters = [String: Any]
 typealias ParametersArray = [(key: String, value: Any)]
 
 /// Network reponse: staus code and data
@@ -72,27 +71,18 @@ extension RequestManager {
                                   host: String,
                                   path: String,
                                   port: Int?,
-                                  parameters: ParametersArray? = nil,
-                                  encoding: Encoding = .url,
+                                  parameters: [String: String]? = nil,
                                   authentification: AuthentificationProtocol? = nil) -> URLComponents {
         var components = URLComponents()
-        var finalUrlParameters: [URLQueryItem] = []
         
         components.scheme = scheme
         components.host = host
         components.path = path
         components.port = port
         
-        // Parameters
-        switch encoding {
-        case .url:
-            parameters?.forEach({
-                finalUrlParameters.append(URLQueryItem(name: $0.key, value: "\($0.value)"))
-            })
-            
-        default:
-            break
-        }
+		var finalUrlParameters = parameters?.map {
+			URLQueryItem(name: $0.key, value: $0.value)
+		} ?? []
         
         // Authen Params
         authentification?.urlQueryItems.forEach { query in
@@ -108,60 +98,22 @@ extension RequestManager {
         
         return components
     }
-    
-    private func getJSONBodyData(parameters: ParametersArray?,
-                                 authentification: AuthentificationProtocol?) -> Data? {
-        
-        var finalBodyParameters: Parameters = authentification?.bodyParameters ?? [:]
-        
-        // Parameters
-        parameters?.forEach {
-            finalBodyParameters[$0.key] = $0.value
-        }
-        
-        var dataBody: Data?
-        
-        if !finalBodyParameters.isEmpty {
-            if JSONSerialization.isValidJSONObject(finalBodyParameters) {
-                do {
-                    dataBody = try JSONSerialization.data(withJSONObject: finalBodyParameters, options: [])
-                } catch {
-					Logger.data.fault("JSON is invalid - \(error.localizedDescription)")
-                }
-            } else {
-				Logger.data.fault("JSON is invalid - \(RequestError.json.localizedDescription)")
-            }
-        }
-        
-        return dataBody
-    }
 	
-	private func getFormEncodedBodyData(parameters: ParametersArray?,
+	private func getFormEncodedBodyData(parameters: [String: Any]?,
 										authentification: AuthentificationProtocol?) -> Data? {
+		guard let parameters, !parameters.isEmpty else { return nil }
 		
-		var finalBodyParameters: Parameters = authentification?.bodyParameters ?? [:]
-		
-		// Parameters
-		parameters?.forEach {
-			finalBodyParameters[$0.key] = $0.value
+		if JSONSerialization.isValidJSONObject(parameters) {
+			var requestBody = URLComponents()
+			requestBody.queryItems = parameters.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
+			return requestBody.query?.data(using: .utf8)
+		} else {
+			Logger.data.fault("JSON is invalid - \(RequestError.json.localizedDescription)")
+			return nil
 		}
-		
-		var dataBody: Data?
-		
-		if !finalBodyParameters.isEmpty {
-			if JSONSerialization.isValidJSONObject(finalBodyParameters) {
-				var requestBody = URLComponents()
-				requestBody.queryItems = finalBodyParameters.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
-				dataBody = requestBody.query?.data(using: .utf8)
-			} else {
-				Logger.data.fault("JSON is invalid - \(RequestError.json.localizedDescription)")
-			}
-		}
-		
-		return dataBody
 	}
-    
-    private func getHeaders(headers: Headers?,
+	
+	private func getHeaders(headers: Headers?,
                             authentification: AuthentificationProtocol?) -> Headers {
         var finalHeaders: Headers = authentification?.headers ?? [:]
         
@@ -178,19 +130,18 @@ extension RequestManager {
                                path: String,
 							   port: Int?,
 							   method: RequestMethod,
-							   parameters: ParametersArray? = nil,
-							   files: [RequestFile]? = nil,
-							   encoding: Encoding = .url,
-							   headers: Headers? = nil,
-							   authentification: AuthentificationProtocol? = nil,
+							   urlParameters: [String: String]?,
+							   parameters: Parameters?,
+							   files: [RequestFile]?,
+							   headers: Headers?,
+							   authentification: AuthentificationProtocol?,
                                cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData) throws -> URLRequest {
         // URL components
         let components = self.getUrlComponents(scheme: scheme,
                                                host: host,
                                                path: path,
                                                port: port,
-                                               parameters: parameters,
-                                               encoding: encoding,
+											   parameters: urlParameters,
                                                authentification: authentification)
         
         guard let url = components.url else { throw RequestError.url }
@@ -204,21 +155,19 @@ extension RequestManager {
         finalHeaders.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
         
         
-        switch encoding {
-        case .json:
+		switch parameters {
+		case .encodable(let value):
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = self.getJSONBodyData(parameters: parameters,
-                                                    authentification: authentification)
+            request.httpBody = try JSONEncoder().encode(value)
             
-		case .formURLEncoded:
+		case .formURLEncoded(let values):
 			request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-			request.httpBody = self.getFormEncodedBodyData(parameters: parameters,
-														   authentification: authentification)
+			request.httpBody = self.getFormEncodedBodyData(parameters: values, authentification: authentification)
 			
-        case .formData:
+        case .formData(let value):
 			var multipart = MultipartRequest()
 			
-			for parameter in parameters ?? [] {
+			for parameter in value {
 				multipart.add(key: parameter.key, value: "\(parameter.value)")
 			}
 			
@@ -235,9 +184,13 @@ extension RequestManager {
 							 forHTTPHeaderField: "Content-Type")
 			
 			request.httpBody = multipart.httpBody
-            
-        default: break
-        }
-        return request
-    }
+			
+		case .other(let type, let data):
+			request.setValue(type.value, forHTTPHeaderField: type.key)
+			request.httpBody = data
+			
+		case .none: break
+		}
+		return request
+	}
 }

@@ -16,9 +16,6 @@ public protocol AuthentificationProtocol {
     /// Auth headeres
     var headers: Headers { get }
     
-    /// Auth params
-    var bodyParameters: Parameters { get }
-    
     /// Auth query params
     var urlQueryItems: [URLQueryItem] { get }
 }
@@ -27,10 +24,7 @@ extension AuthentificationProtocol {
     
     /// Auth headeres
     public var headers: Headers { [:] }
-    
-    /// Auth params
-    public var bodyParameters: Parameters { [:] }
-    
+        
     /// Auth query params
     public var urlQueryItems: [URLQueryItem] { [] }
 }
@@ -41,13 +35,6 @@ extension Array: AuthentificationProtocol where Element == AuthentificationProto
         self.reduce(into: [:]) { headers, new in
             let value: Headers = new.headers
 			headers = headers.merging(value) { current, _ in current }
-        }
-    }
-    
-    public var bodyParameters: Parameters {
-        self.reduce(into: [:]) { params, new in
-            let value: Parameters = new.bodyParameters
-			params = params.merging(value) { current, _ in current }
         }
     }
     
