@@ -50,13 +50,13 @@ extension RequestManager {
 						 path: String,
 						 port: Int?,
 						 warningTime: Double,
-						 timeOut: TimeInterval,
 						 method: RequestMethod = .get,
 						 urlParameters: [String: String]?,
 						 parameters: Parameters?,
 						 files: [RequestFile]?,
 						 headers: Headers?,
 						 authentification: AuthentificationProtocol?,
+						 timeout: TimeInterval?,
 						 description: String,
 						 retryAuthentification: Bool,
 						 cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData) async throws -> NetworkResponse {
@@ -72,16 +72,17 @@ extension RequestManager {
 														files: files,
 														headers: headers,
 														authentification: authentification,
+														timeout: timeout,
 														cachePolicy: cachePolicy)
 		
-		request.timeoutInterval = timeOut
+		request.timeoutInterval = timeout ?? self.requestTimeoutInterval
 		
 		Logger.requestSend.notice("\(description)")
 		
 		// Date
 		let startDate = Date()
 		let session = URLSession(configuration: self.requestConfiguration)
-		session.configuration.timeoutIntervalForRequest = timeOut
+		session.configuration.timeoutIntervalForRequest = timeout ?? self.requestTimeoutInterval
 		
 		do {
 			// Call
@@ -128,13 +129,13 @@ extension RequestManager {
 											  path: path,
 											  port: port,
 											  warningTime: warningTime,
-											  timeOut: timeOut,
 											  method: method,
 											  urlParameters: urlParameters,
 											  parameters: parameters,
 											  files: files,
 											  headers: headers,
 											  authentification: authentification,
+											  timeout: timeout,
 											  description: description,
 											  retryAuthentification: false,
 											  cachePolicy: cachePolicy)
@@ -181,13 +182,13 @@ extension RequestManager {
 							   path: request.path,
 							   port: request.port,
 							   warningTime: request.warningTime,
-							   timeOut: request.timeOut,
 							   method: request.method,
 							   urlParameters: request.urlParameters,
 							   parameters: request.parameters,
 							   files: request.files,
 							   headers: request.headers,
 							   authentification: request.authentification,
+							   timeout: request.timeoutInterval,
 							   description: request.description,
 							   retryAuthentification: request.canRefreshToken,
 							   cachePolicy: request.cachePolicy)

@@ -114,6 +114,7 @@ extension RequestManager {
 							  parameters: Parameters? = nil,
                               headers: Headers? = nil,
                               authentification: AuthentificationProtocol? = nil,
+							  timeout: TimeInterval?,
                               forceDownload: Bool? = false,
                               cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData,
                               completion: ((Result<Int, Error>) -> Void)? = nil,
@@ -131,6 +132,7 @@ extension RequestManager {
 											files: nil,
                                             headers: headers,
                                             authentification: authentification,
+											timeout: timeout,
                                             cachePolicy: cachePolicy)
         } catch {
             completion?(.failure(error))
@@ -139,6 +141,7 @@ extension RequestManager {
         
         self.downloadFileWithRequest(request: request,
                                      destinationURL: destinationURL,
+									 timeout: timeout,
                                      forceDownload: forceDownload,
                                      completion: completion,
                                      progress: progress)
@@ -146,6 +149,7 @@ extension RequestManager {
     
     private func downloadFileWithRequest(request: URLRequest,
                                          destinationURL: URL,
+										 timeout: TimeInterval?,
                                          identifier: String? = nil,
                                          forceDownload: Bool? = false,
                                          completion: ((Result<Int, Error>) -> Void)? = nil,
@@ -172,7 +176,7 @@ extension RequestManager {
         
         // downloadConfiguration is default (delegate Queue is Background by default)
         let session = URLSession(configuration: self.downloadConfiguration, delegate: delegate, delegateQueue: nil)
-        if let timeoutInterval = self.downloadTimeoutInterval {
+        if let timeoutInterval = timeout ?? self.downloadTimeoutInterval {
             request.timeoutInterval = timeoutInterval
         }
         
@@ -204,6 +208,7 @@ extension RequestManager {
 							  parameters: request.parameters,
                               headers: request.headers,
                               authentification: request.authentification,
+							  timeout: request.timeoutInterval,
                               forceDownload: forceDownload,
                               cachePolicy: request.cachePolicy,
                               completion: { continuation.resume(with: $0) },
@@ -215,18 +220,21 @@ extension RequestManager {
      Download url with request and gives the progress
      - parameter sourceURL : URL of the file to download
      - parameter destinationURL : URL where the file will be copied
+     - parameter timeout : Timeout interval
      - parameter forceDownload : download the file event if it already exists and delete previous existing. Return existing otherwise
      - parameter result: Download Result
      - parameter progress: Download progress
      */
     public func download(sourceURL: URL,
                          destinationURL: URL,
+						 timeout: TimeInterval? = nil,
                          forceDownload: Bool? = false,
                          progress: ((Float) -> Void)? = nil) async throws -> Int {
         
         try await withCheckedThrowingContinuation { continuation in
             self.downloadFileWithRequest(request: URLRequest(url: sourceURL),
                                          destinationURL: destinationURL,
+										 timeout: timeout,
                                          forceDownload: forceDownload,
                                          completion: { continuation.resume(with: $0) },
                                          progress: progress)

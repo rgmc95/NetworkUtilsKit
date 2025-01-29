@@ -40,7 +40,7 @@ public protocol RequestProtocol: CustomStringConvertible {
     var warningTime: TimeInterval { get }
 	
 	/// Request time out
-	var timeOut: TimeInterval { get }
+	var timeoutInterval: TimeInterval? { get }
     
     /// Request method
     var method: RequestMethod { get }
@@ -88,6 +88,7 @@ extension RequestProtocol {
 												files: self.files,
                                                 headers: self.headers,
                                                 authentification: self.authentification,
+												timeout: self.timeoutInterval,
                                                 cachePolicy: self.cachePolicy)
     }
     
@@ -102,6 +103,7 @@ extension RequestProtocol {
 												files: self.files,
                                                 headers: self.headers,
                                                 authentification: nil,
+												timeout: self.timeoutInterval,
                                                 cachePolicy: self.cachePolicy)
     }
 	
@@ -150,7 +152,9 @@ extension RequestProtocol {
     
     /// Request warning time response if needed
     public var warningTime: TimeInterval { 2 }
-    public var timeOut: TimeInterval { 60 }
+	
+	/// Request time out
+    public var timeoutInterval: TimeInterval? { nil }
 }
 
 extension RequestProtocol {

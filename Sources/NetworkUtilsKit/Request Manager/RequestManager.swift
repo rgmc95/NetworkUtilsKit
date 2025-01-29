@@ -46,7 +46,7 @@ public class RequestManager {
     public var requestConfiguration: URLSessionConfiguration
     
     /// Interval before request time out
-    public var requestTimeoutInterval: TimeInterval?
+    public var requestTimeoutInterval: TimeInterval = 60
     
     /// Downlaod request configuration
     public var downloadConfiguration: URLSessionConfiguration
@@ -135,6 +135,7 @@ extension RequestManager {
 							   files: [RequestFile]?,
 							   headers: Headers?,
 							   authentification: AuthentificationProtocol?,
+							   timeout: TimeInterval?,
                                cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData) throws -> URLRequest {
         // URL components
         let components = self.getUrlComponents(scheme: scheme,
@@ -148,6 +149,7 @@ extension RequestManager {
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
+		request.timeoutInterval = timeout ?? self.requestTimeoutInterval
         request.cachePolicy = cachePolicy // .reloadIgnoringLocalCacheData allow reponse 304 instead of 200.
         
         // Final headers
