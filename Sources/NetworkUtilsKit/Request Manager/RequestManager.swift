@@ -156,7 +156,6 @@ extension RequestManager {
         let finalHeaders = self.getHeaders(headers: headers, authentification: authentification)
         finalHeaders.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
         
-        
 		switch parameters {
 		case .encodable(let value):
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")

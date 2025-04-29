@@ -37,8 +37,23 @@ extension Array: AuthentificationProtocol where Element == AuthentificationProto
 			headers = headers.merging(value) { current, _ in current }
         }
     }
-    
-    public var urlQueryItems: [URLQueryItem] {
-        self.flatMap { $0.urlQueryItems }
-    }
+	
+	public var urlQueryItems: [URLQueryItem] {
+		self.flatMap { $0.urlQueryItems }
+	}
+}
+
+extension AuthentificationProtocol {
+	
+	func refreshIfNeeded(from request: URLRequest?) async {
+		if let authent = self as? AuthentificationRefreshableProtocol, !authent.isValid {
+			try? await authent.refresh(from: request)
+		}
+		
+		if let authents = (self as? [AuthentificationProtocol])?.compactMap({ $0 as? AuthentificationRefreshableProtocol }) {
+			for authent in authents where !authent.isValid {
+				try? await authent.refresh(from: request)
+			}
+		}
+	}
 }

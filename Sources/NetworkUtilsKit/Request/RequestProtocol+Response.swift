@@ -46,6 +46,8 @@ extension RequestProtocol {
             }
             
 		do {
+			await self.authentification?.refreshIfNeeded(from: nil)
+			
 			let response = try await RequestManager.shared.request(self)
 			if let cacheKey = self.cacheKey {
 				NetworkCache.shared.set(response.data, for: cacheKey)
