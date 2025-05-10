@@ -9,11 +9,11 @@ import OSLog
 
 extension Logger {
 	
-	static let requestSend = Logger(subsystem: "Network", category: "Send")
-	static let requestSuccess = Logger(subsystem: "Network", category: "Success")
-	static let requestFail = Logger(subsystem: "Network", category: "Fail")
-	static let requestCancel = Logger(subsystem: "Network", category: "Cancel")
-	static let mock = Logger(subsystem: "Network", category: "Mock")
-	static let cache = Logger(subsystem: "Network", category: "Cache")
-	static let download = Logger(subsystem: "Network", category: "Download")
+	static let requestSend = Logger(subsystem: "NetworkUtilsKit", category: "Send")
+	static let requestSuccess = Logger(subsystem: "NetworkUtilsKit", category: "Success")
+	static let requestFail = Logger(subsystem: "NetworkUtilsKit", category: "Fail")
+	static let requestCancel = Logger(subsystem: "NetworkUtilsKit", category: "Cancel")
+	static let mock = Logger(subsystem: "NetworkUtilsKit", category: "Mock")
+	static let cache = Logger(subsystem: "NetworkUtilsKit", category: "Cache")
+	static let download = Logger(subsystem: "NetworkUtilsKit", category: "Download")
 }
