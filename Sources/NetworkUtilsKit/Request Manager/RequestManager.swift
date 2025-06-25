@@ -21,6 +21,10 @@ import UtilsKit
 import FoundationNetworking
 #endif
 
+extension Logger {
+	static let data = Logger(subsystem: "NetworkUtilsKit", category: "Data")
+}
+
 /// Request headers
 public typealias Headers = [String: String]
 

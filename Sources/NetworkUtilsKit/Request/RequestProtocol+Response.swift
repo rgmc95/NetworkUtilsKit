@@ -17,6 +17,10 @@ import UtilsKitCore
 import UtilsKit
 #endif
 
+extension Logger {
+	static let decode = Logger(subsystem: "NetworkUtilsKit", category: "Decode")
+}
+
 // MARK: Response
 extension RequestProtocol {
     /**
