@@ -12,7 +12,7 @@ import Foundation
 import FoundationNetworking
 #endif
 
-public protocol AuthentificationRefreshableProtocol: AuthentificationProtocol {
+public protocol AuthentificationRefreshableProtocol: AuthentificationProtocol, Sendable {
 	
 	var isValid: Bool { get }
     

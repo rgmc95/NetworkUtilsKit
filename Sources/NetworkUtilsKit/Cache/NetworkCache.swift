@@ -42,14 +42,14 @@ public struct CacheKey {
     }
 }
 
-internal struct NetworkCache {
+internal struct NetworkCache: Sendable {
     
     // MARK: - Singleton
     /// The shared singleton NetworkCache object
     internal static let shared = NetworkCache()
     
     // MARK: - Variables
-    internal let defaults = UserDefaults(suiteName: kUserDefaultsName)
+	internal var defaults: UserDefaults? { UserDefaults(suiteName: kUserDefaultsName) }
     
     // MARK: - Functions
     internal func set(_ datas: Data?, for key: CacheKey) {

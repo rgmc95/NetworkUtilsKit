@@ -39,7 +39,7 @@ typealias ParametersArray = [(key: String, value: Any)]
 public typealias NetworkResponse = (statusCode: Int?, data: Data?)
 
 /// Manage all requests
-public class RequestManager {
+public actor RequestManager {
     
     // MARK: - Singleton
     /// The shared singleton RequestManager object
