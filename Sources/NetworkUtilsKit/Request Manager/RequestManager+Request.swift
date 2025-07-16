@@ -23,19 +23,19 @@ import FoundationNetworking
 
 extension URLSession {
 	
-	func data(with request: URLRequest, description: String) async throws -> (Data?, URLResponse?) {
+	nonisolated func data(with request: URLRequest, description: String) async throws -> (Data?, URLResponse?) {
 		try await withUnsafeThrowingContinuation { continuation in
-			let task = self.dataTask(with: request) { data, response, error in
-				DispatchQueue.main.async {
-					RequestManager.shared.tasks.removeValue(forKey: description)
+			Task {
+				let task = self.dataTask(with: request) { data, response, error in
+					Task {
+						await RequestManager.shared.set(task: nil, for: description)
+						if let error = error { continuation.resume(throwing: error); return }
+						continuation.resume(returning: (data, response))
+					}
 				}
-				if let error = error { continuation.resume(throwing: error); return }
-				continuation.resume(returning: (data, response))
+				await RequestManager.shared.set(task: task, for: description)
+				task.resume()
 			}
-			DispatchQueue.main.async {
-				RequestManager.shared.tasks[description] = task
-			}
-			task.resume()
 		}
 	}
 }
@@ -62,18 +62,18 @@ extension RequestManager {
 						 cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData) async throws -> NetworkResponse {
 		
 		// Request
-		var request: URLRequest = try self.buildRequest(scheme: scheme,
-														host: host,
-														path: path,
-														port: port,
-														method: method,
-														urlParameters: urlParameters,
-														parameters: parameters,
-														files: files,
-														headers: headers,
-														authentification: authentification,
-														timeout: timeout,
-														cachePolicy: cachePolicy)
+		var request: URLRequest = try await self.buildRequest(scheme: scheme,
+															  host: host,
+															  path: path,
+															  port: port,
+															  method: method,
+															  urlParameters: urlParameters,
+															  parameters: parameters,
+															  files: files,
+															  headers: headers,
+															  authentification: authentification,
+															  timeout: timeout,
+															  cachePolicy: cachePolicy)
 		
 		request.timeoutInterval = timeout ?? self.requestTimeoutInterval
 		

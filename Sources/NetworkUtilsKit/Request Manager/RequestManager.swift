@@ -58,14 +58,17 @@ public actor RequestManager {
     /// Interval before request time out
     public var downloadTimeoutInterval: TimeInterval?
 	
-	@MainActor
-	public var tasks: [String: URLSessionDataTask] = [:]
+	private(set) var tasks: [String: URLSessionDataTask] = [:]
     
     // MARK: - Init
     private init() {
         self.requestConfiguration = URLSessionConfiguration.default
         self.downloadConfiguration = URLSessionConfiguration.default
     }
+	
+	func set(task: URLSessionDataTask?, for key: String) {
+		self.tasks[key] = task
+	}
 }
 
 // MARK: - Utils
@@ -118,8 +121,8 @@ extension RequestManager {
 	}
 	
 	private func getHeaders(headers: Headers?,
-                            authentification: AuthentificationProtocol?) -> Headers {
-        var finalHeaders: Headers = authentification?.headers ?? [:]
+                            authentification: AuthentificationProtocol?) async -> Headers {
+        var finalHeaders: Headers = await authentification?.headers ?? [:]
         
         // Headers
         headers?.forEach {
@@ -140,7 +143,7 @@ extension RequestManager {
 							   headers: Headers?,
 							   authentification: AuthentificationProtocol?,
 							   timeout: TimeInterval?,
-                               cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData) throws -> URLRequest {
+                               cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData) async throws -> URLRequest {
         // URL components
         let components = self.getUrlComponents(scheme: scheme,
                                                host: host,
@@ -157,7 +160,7 @@ extension RequestManager {
         request.cachePolicy = cachePolicy // .reloadIgnoringLocalCacheData allow reponse 304 instead of 200.
         
         // Final headers
-        let finalHeaders = self.getHeaders(headers: headers, authentification: authentification)
+        let finalHeaders = await self.getHeaders(headers: headers, authentification: authentification)
         finalHeaders.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
         
 		switch parameters {

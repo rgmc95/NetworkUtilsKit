@@ -42,7 +42,7 @@ public struct CacheKey {
     }
 }
 
-internal struct NetworkCache: Sendable {
+internal struct NetworkCache {
     
     // MARK: - Singleton
     /// The shared singleton NetworkCache object

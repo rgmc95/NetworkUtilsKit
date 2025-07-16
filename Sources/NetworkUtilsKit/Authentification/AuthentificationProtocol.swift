@@ -11,10 +11,10 @@ import Foundation
 /**
  This protocol is used to authenticate a request with the chosen headers, body parameters or/and url query parameters
  */
-public protocol AuthentificationProtocol {
+public protocol AuthentificationProtocol: Sendable {
     
     /// Auth headeres
-    var headers: Headers { get }
+    var headers: Headers { get async }
     
     /// Auth query params
     var urlQueryItems: [URLQueryItem] { get }
@@ -32,10 +32,16 @@ extension AuthentificationProtocol {
 extension Array: AuthentificationProtocol where Element == AuthentificationProtocol {
     
     public var headers: Headers {
-        self.reduce(into: [:]) { headers, new in
-            let value: Headers = new.headers
-			headers = headers.merging(value) { current, _ in current }
-        }
+		get async {
+			var headers: Headers = [:]
+			
+			for new in self {
+				let value: Headers = await new.headers
+				headers = headers.merging(value) { current, _ in current }
+			}
+			
+			return headers
+		}
     }
 	
 	public var urlQueryItems: [URLQueryItem] {
@@ -45,13 +51,13 @@ extension Array: AuthentificationProtocol where Element == AuthentificationProto
 
 extension AuthentificationProtocol {
 	
-	func refreshIfNeeded(from request: URLRequest?) async {
-		if let authent = self as? AuthentificationRefreshableProtocol, !authent.isValid {
+	nonisolated func refreshIfNeeded(from request: URLRequest?) async {
+		if let authent = self as? AuthentificationRefreshableProtocol, await !authent.isValid {
 			try? await authent.refresh(from: request)
 		}
 		
 		if let authents = (self as? [AuthentificationProtocol])?.compactMap({ $0 as? AuthentificationRefreshableProtocol }) {
-			for authent in authents where !authent.isValid {
+			for authent in authents where await !authent.isValid {
 				try? await authent.refresh(from: request)
 			}
 		}
