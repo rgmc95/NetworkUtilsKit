@@ -21,7 +21,7 @@ import FoundationNetworking
 #endif
 
 // MARK: - Network download management
-private final class NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate, Sendable {
+private actor NetworkDownloadManagement: NSObject, URLSessionDownloadDelegate {
 	
 	let destination: URL
 	let identifier: String?
@@ -46,6 +46,7 @@ private final class NetworkDownloadManagement: NSObject, URLSessionDownloadDeleg
 	}
 	
 	// MARK: URLSessionDownloadDelegate
+	nonisolated
 	func urlSession(_ session: URLSession,
 					downloadTask: URLSessionDownloadTask,
 					didFinishDownloadingTo location: URL) {
@@ -78,6 +79,7 @@ private final class NetworkDownloadManagement: NSObject, URLSessionDownloadDeleg
 		}
 	}
 	
+	nonisolated
 	func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 		if error == nil { return }
 		guard let response = task.response as? HTTPURLResponse else {
@@ -92,6 +94,7 @@ private final class NetworkDownloadManagement: NSObject, URLSessionDownloadDeleg
 		return
 	}
 	
+	nonisolated
 	func urlSession(_ session: URLSession,
 					downloadTask: URLSessionDownloadTask,
 					didWriteData bytesWritten: Int64,
@@ -121,32 +124,33 @@ extension RequestManager {
 							  cachePolicy: URLRequest.CachePolicy = .reloadIgnoringLocalCacheData,
 							  completion: (@Sendable (Result<Int, Error>) -> Void)? = nil,
 							  progress: (@Sendable (Float) -> Void)? = nil) {
-		
-		var request: URLRequest
-		do {
-			request = try self.buildRequest(scheme: scheme,
-											host: host,
-											path: path,
-											port: port,
-											method: method,
-											urlParameters: urlParameters,
-											parameters: parameters,
-											files: nil,
-											headers: headers,
-											authentification: authentification,
-											timeout: timeout,
-											cachePolicy: cachePolicy)
-		} catch {
-			completion?(.failure(error))
-			return
+		Task {
+			var request: URLRequest
+			do {
+				request = try await self.buildRequest(scheme: scheme,
+													  host: host,
+													  path: path,
+													  port: port,
+													  method: method,
+													  urlParameters: urlParameters,
+													  parameters: parameters,
+													  files: nil,
+													  headers: headers,
+													  authentification: authentification,
+													  timeout: timeout,
+													  cachePolicy: cachePolicy)
+			} catch {
+				completion?(.failure(error))
+				return
+			}
+			
+			self.downloadFileWithRequest(request: request,
+										 destinationURL: destinationURL,
+										 timeout: timeout,
+										 forceDownload: forceDownload,
+										 completion: completion,
+										 progress: progress)
 		}
-		
-		self.downloadFileWithRequest(request: request,
-									 destinationURL: destinationURL,
-									 timeout: timeout,
-									 forceDownload: forceDownload,
-									 completion: completion,
-									 progress: progress)
 	}
 	
 	private func downloadFileWithRequest(request: URLRequest,

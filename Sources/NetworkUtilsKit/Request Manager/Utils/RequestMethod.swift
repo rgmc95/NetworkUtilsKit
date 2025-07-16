@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum RequestMethod: String {
+public enum RequestMethod: String, Sendable {
     case connect 	= "CONNECT"
     case delete  	= "DELETE"
     case get 		= "GET"

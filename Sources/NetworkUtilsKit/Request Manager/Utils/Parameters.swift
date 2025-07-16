@@ -7,9 +7,9 @@
 
 import Foundation
 
-public enum Parameters {
-	case encodable(Encodable)
-	case formURLEncoded([String: Any])
-	case formData([String: Any])
+public enum Parameters: Sendable {
+	case encodable(Encodable & Sendable)
+	case formURLEncoded([String: Sendable])
+	case formData([String: Sendable])
 	case other(type: (key: String, value: String), data: Data)
 }

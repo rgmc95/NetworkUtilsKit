@@ -14,7 +14,7 @@ import FoundationNetworking
 
 public protocol AuthentificationRefreshableProtocol: AuthentificationProtocol, Sendable {
 	
-	var isValid: Bool { get }
+	var isValid: Bool { get async }
     
-    func refresh(from request: URLRequest?) async throws
+	nonisolated func refresh(from request: URLRequest?) async throws
 }

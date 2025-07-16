@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct RequestFile {
+public struct RequestFile: Sendable {
 	public let key: String
 	public let name: String
 	public let type: String

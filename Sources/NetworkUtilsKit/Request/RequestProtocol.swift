@@ -77,7 +77,7 @@ extension RequestProtocol {
 		"\(self.method.rawValue) - \(self.scheme)://\(self.host)\(self.path)"
 	}
 	
-	public var request: URLRequest? {
+	nonisolated public var request: URLRequest? {
 		get async {
 			try? await RequestManager.shared.buildRequest(scheme: self.scheme,
 														  host: self.host,
@@ -94,7 +94,7 @@ extension RequestProtocol {
 		}
 	}
 	
-	public var requestWithoutAuthentification: URLRequest? {
+	nonisolated public var requestWithoutAuthentification: URLRequest? {
 		get async {
 			try? await RequestManager.shared.buildRequest(scheme: self.scheme,
 														  host: self.host,
@@ -111,14 +111,12 @@ extension RequestProtocol {
 		}
 	}
 	
-	public func cancel() {
+	public func cancel() async {
 		let description = self.description
 		
-		DispatchQueue.main.async {
-			guard let request = RequestManager.shared.tasks[description] else { return }
-			Logger.requestCancel.notice("\(description)")
-			request.cancel()
-		}
+		guard let request = await RequestManager.shared.tasks[description] else { return }
+		Logger.requestCancel.notice("\(description)")
+		request.cancel()
 	}
 }
 
