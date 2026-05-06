@@ -81,7 +81,9 @@ extension RequestManager {
 		
 		// Date
 		let startDate = Date()
-		let session = URLSession(configuration: self.requestConfiguration)
+		let session = URLSession(configuration: self.requestConfiguration,
+								 delegate: self.sessionDelegate,
+								 delegateQueue: nil)
 		session.configuration.timeoutIntervalForRequest = timeout ?? self.requestTimeoutInterval
 		
 		do {

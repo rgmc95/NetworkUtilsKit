@@ -46,6 +46,9 @@ public actor RequestManager {
     public static let shared = RequestManager()
     
     // MARK: - Variables
+	/// Request delegate
+	weak var sessionDelegate: URLSessionDelegate?
+	
     /// Request configuration
     public var requestConfiguration: URLSessionConfiguration
     
@@ -68,6 +71,10 @@ public actor RequestManager {
 	
 	func set(task: URLSessionDataTask?, for key: String) {
 		self.tasks[key] = task
+	}
+	
+	public func setSessionDelegate(_ sessionDelegate: URLSessionDelegate?) {
+		self.sessionDelegate = sessionDelegate
 	}
 }
 
